@@ -5,10 +5,6 @@ using namespace std;
 
 #include "Platform.h"
 
-void draw()
-{
-}
-
 int main(int argc, char **argv) 
 {
 
