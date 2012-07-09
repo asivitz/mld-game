@@ -20,6 +20,7 @@ class Platform : public Rice::Director
    void addDrawCommand(Array a);
    void setViewMatrix(Array a);
    bool isWindowOpen();
+   int loadImage(string fileName);
 };
 
 #endif

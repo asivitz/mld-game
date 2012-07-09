@@ -22,6 +22,7 @@ class Player
    end
 end
 
+$running = true
 $one = Player.new
 
 class Platform
@@ -45,6 +46,10 @@ class Platform
       else
          $one.ximp = 0
       end
+
+      if key_map[16]
+         $running = false
+      end
    end
 end
 
@@ -57,7 +62,7 @@ view = Matrix.ortho(-150, 150, -150, 150, -30, 1)
 
 platform.setViewMatrix(view.flatten)
 
-while platform.isWindowOpen
+while platform.isWindowOpen and $running
    model = $one.mat
    platform.addDrawCommand(model.flatten)
    platform.update

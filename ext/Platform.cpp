@@ -7,6 +7,9 @@
 #include "rice/Constructor.hpp"
 #include "rice/Data_Type.hpp"
 
+#include <SFML/Graphics.hpp>
+//#include <SFML/Image.hpp>
+
 using namespace Rice;
 using namespace std;
 
@@ -65,6 +68,25 @@ void Platform::addDrawCommand(Array a)
    }
 }
 
+int Platform::loadImage(string fileName)
+{
+   sf::Image image;
+
+   if(!image.loadFromFile(fileName.c_str()))
+   {
+      return 0;
+   }
+
+   GLuint textureID;
+   glGenTextures(1, &textureID);
+   glBindTexture(GL_TEXTURE_2D, textureID);
+
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.getSize().x, image.getSize().y,
+         0, GL_RGB, GL_UNSIGNED_BYTE, image.getPixelsPtr());
+   
+   return textureID;
+}
+
 void Platform::setViewMatrix(Array a)
 {
    if (a.size() == 16)
@@ -86,6 +108,7 @@ void Init_engine()
       .define_method("addDrawCommand", &Platform::addDrawCommand)
       .define_method("setViewMatrix", &Platform::setViewMatrix)
       .define_method("isWindowOpen", &Platform::isWindowOpen)
+      .define_method("loadImage", &Platform::loadImage)
       .define_method("update", &Platform::update);
 
    /*
