@@ -1,5 +1,10 @@
 #include "Platform.h"
 
+#include "rice/Class.hpp"
+#include "rice/String.hpp"
+
+using namespace Rice;
+
 Platform::Platform()
 {
    if( !glfwInit() )
@@ -25,4 +30,13 @@ Platform::~Platform()
 void Platform::update()
 {
    renderer->draw();
+}
+
+   extern "C"
+void Init_Platform()
+{
+   Data_Type<Platform> rb_cPlatform =
+      define_class<Platform>("Platform")
+      .define_constructor(Constructor<Platform>())
+      .define_method("update", &Platform::update);
 }
