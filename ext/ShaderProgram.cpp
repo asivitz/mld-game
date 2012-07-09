@@ -1,9 +1,5 @@
 //
-//  ShaderProgram.m
-//  ES2Framework
-//
 //  Adapted from ShaderProgram.m by Ryan Evans.
-//  Copyright 2010 Muteki Corporation. All rights reserved.
 //
 
 #include "ShaderProgram.h"
@@ -88,19 +84,6 @@ GLint ShaderProgram::locationOfUniform(const char * inUniformName)
    GLint loc = glGetUniformLocation(m_programID, inUniformName);
    //loc may be -1 if uniform is optimized out. not necessarily an error
    return loc;
-   /*
-   NSNumber * result = [m_uniformMap objectForKey:inUniformName];
-   if (result)
-   {
-      return [result intValue];
-   }
-   else
-   {
-      GLint loc = glGetUniformLocation(m_programID, [inUniformName cStringUsingEncoding:NSASCIIStringEncoding]);
-      [m_uniformMap setObject:[NSNumber numberWithInt:loc] forKey:inUniformName];
-      return loc;
-   }
-   */
 }
 
 GLint ShaderProgram::locationOfTex()

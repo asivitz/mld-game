@@ -49,13 +49,15 @@ void Renderer::setupSquareDrawing()
    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(boxIndices), boxIndices, GL_STATIC_DRAW);
 
 
-   program = makeProgram("shaders/Shader.vsh", "shaders/SolidColor.fsh");
+   program = makeProgram("shaders/Shader.vsh", "shaders/Shader.fsh");
    if (!program)
    {
       cout << "Couldn't create shader" << endl;
       return;
    }
    program->setAsActive();
+   glActiveTexture(GL_TEXTURE0);
+   glUniform1i(program->locationOfTex(), 0);
 
    // Update attribute values.
    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -68,11 +70,8 @@ void Renderer::setupSquareDrawing()
    glEnableVertexAttribArray(program->indexForAttribute("texCoords"));
 }
 
-void Renderer::addCommand(float m[16])
+void Renderer::addCommand(DrawCommand * command)
 {
-   DrawCommand * command = new DrawCommand();
-   //command->m = m;
-   memcpy(command->m, m, sizeof(float) * 16);
    commands.push(command);
 }
 
@@ -86,7 +85,9 @@ void Renderer::executeCommands()
    while (!commands.empty())
    {
       DrawCommand * command = commands.front();
+
       glUniformMatrix4fv(program->locationOfModelMat(), 1, GL_FALSE, command->m);
+      glBindTexture(GL_TEXTURE_2D, command->texId);
       glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_SHORT, 0);
       delete command;
       commands.pop();
@@ -95,7 +96,7 @@ void Renderer::executeCommands()
 
 void Renderer::draw()
 {
-   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+   glClearColor(0.4f, 0.4f, 0.4f, 1.0f);
    glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
 
    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -104,5 +105,7 @@ void Renderer::draw()
    glUniformMatrix4fv(program->locationOfUniform("viewMat"), 1, GL_FALSE, viewMatrix);
    glUniform4f(program->locationOfUniform("color"), 1.0, 1.0, 1.0, 1.0);
 
+   glEnable(GL_BLEND);
    executeCommands();
+   glDisable(GL_BLEND);
 }

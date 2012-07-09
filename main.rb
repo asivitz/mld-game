@@ -11,6 +11,8 @@ class Player
       @y = 0.0
       @ximp = 0.0
       @yimp = 0.0
+
+      @texid = $platform.loadImage "images/bossfire.png"
    end
    
    def mat
@@ -18,12 +20,13 @@ class Player
       #p "x: #{@x}"
       m = Matrix.identity(4)
       m = m.translate(@x,@y,0)
-      m = m.scale(20,20,1)
+      m = m.scale(40,40,1)
+   end
+
+   def draw
+      $platform.addDrawCommand(@texid, self.mat.flatten)
    end
 end
-
-$running = true
-$one = Player.new
 
 class Platform
    def key_map
@@ -53,20 +56,21 @@ class Platform
    end
 end
 
-platform = Platform.new
+$platform = Platform.new
 
-platform.addDrawCommand([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16])
+$running = true
+$one = Player.new
+
 
 view = Matrix.ortho(-150, 150, -150, 150, -30, 1)
 
 
-platform.setViewMatrix(view.flatten)
+$platform.setViewMatrix(view.flatten)
 
-while platform.isWindowOpen and $running
-   model = $one.mat
-   platform.addDrawCommand(model.flatten)
-   platform.update
+while $platform.isWindowOpen and $running
+   $one.draw
+   $platform.update
 
-   platform.process_input
+   $platform.process_input
    $one.x += $one.ximp
 end

@@ -11,6 +11,7 @@ using namespace std;
 struct DrawCommand
 {
    float m[16];
+   GLuint texId;
 };
 
 class Renderer
@@ -25,7 +26,7 @@ class Renderer
    public:
    Renderer();
    ~Renderer();
-   void addCommand(float m[16]);
+   void addCommand(DrawCommand * command);
    void executeCommands();
    void setupSquareDrawing();
    void commitViewMatrix();

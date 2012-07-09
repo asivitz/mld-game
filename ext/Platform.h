@@ -17,7 +17,7 @@ class Platform : public Rice::Director
    Platform(Object self);
    ~Platform();
    void update();
-   void addDrawCommand(Array a);
+   void addDrawCommand(int texid, Array a);
    void setViewMatrix(Array a);
    bool isWindowOpen();
    int loadImage(string fileName);
