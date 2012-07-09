@@ -3,6 +3,12 @@ $: << File.expand_path(File.join(File.dirname(__FILE__),))
 require 'ext/engine'
 require 'matrix_graphics'
 
+class Platform
+   def key_pressed code
+      p code
+   end
+end
+
 platform = Platform.new
 
 platform.addDrawCommand([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16])
@@ -15,7 +21,7 @@ platform.setViewMatrix(view.flatten)
 model = Matrix.identity(4)
 model = model.scale(50, 50, 1)
 
-while true
+while platform.isWindowOpen
    model = model.rotate(0.1)
    platform.addDrawCommand(model.flatten)
    platform.update

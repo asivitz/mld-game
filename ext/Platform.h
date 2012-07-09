@@ -3,21 +3,23 @@
 
 #include "Renderer.h"
 #include "rice/Array.hpp"
+#include "rice/Director.hpp"
 #include <SFML/Window.hpp>
 
 using namespace Rice;
 
-class Platform
+class Platform : public Rice::Director
 {
    Renderer * renderer;
    sf::Window * window;
 
    public:
-   Platform();
+   Platform(Object self);
    ~Platform();
    void update();
    void addDrawCommand(Array a);
    void setViewMatrix(Array a);
+   bool isWindowOpen();
 };
 
 #endif

@@ -10,7 +10,7 @@
 using namespace Rice;
 using namespace std;
 
-Platform::Platform()
+Platform::Platform(Object self) : Rice::Director(self)
 {
    window = new sf::Window(sf::VideoMode(800, 600), "OpenGL");
    window->setVerticalSyncEnabled(true);
@@ -26,8 +26,25 @@ Platform::~Platform()
 
 void Platform::update()
 {
+   sf::Event event;
+   while (window->pollEvent(event))
+   {
+      // Close window : exit
+      if (event.type == sf::Event::Closed)
+         window->close();
+      else if (event.type == sf::Event::KeyPressed)
+      {
+         getSelf().call("key_pressed", (int)event.key.code);
+      }
+   }
+
    renderer->draw();
    window->display();
+}
+
+bool Platform::isWindowOpen()
+{
+   return window->isOpen();
 }
 
 void Platform::addDrawCommand(Array a)
@@ -61,9 +78,10 @@ void Init_engine()
 {
    Data_Type<Platform> rb_cPlatform =
       define_class<Platform>("Platform")
-      .define_constructor(Constructor<Platform>())
+      .define_constructor(Constructor<Platform, Rice::Object>())
       .define_method("addDrawCommand", &Platform::addDrawCommand)
       .define_method("setViewMatrix", &Platform::setViewMatrix)
+      .define_method("isWindowOpen", &Platform::isWindowOpen)
       .define_method("update", &Platform::update);
 
    /*
