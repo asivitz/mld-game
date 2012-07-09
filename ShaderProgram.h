@@ -2,6 +2,8 @@
 //  ShaderProgram.h
 //  Copyright 2012 Axis Sivitz
 //
+#ifndef SHADER_PROGRAM_H_
+#define SHADER_PROGRAM_H_
 
 #include <GL/glfw.h>
 #include <map>
@@ -38,3 +40,5 @@ class ShaderProgram
 
 GLint compileShader(const char * fileName, GLenum type);
 ShaderProgram * makeProgram(const char * vertShader, const char * fragShader);
+
+#endif

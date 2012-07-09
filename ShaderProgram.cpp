@@ -178,7 +178,7 @@ GLint compileShader(const char * fileName, GLenum type)
       glShaderSource(shaderID, 1, &sourceData, NULL);
       glCompileShader(shaderID);
 
-      free(source);
+      delete(source);
 
       GLint compiled;
       glGetShaderiv(shaderID, GL_COMPILE_STATUS, &compiled);
