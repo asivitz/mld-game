@@ -15,7 +15,7 @@ using namespace std;
 
 Platform::Platform(Object self) : Rice::Director(self)
 {
-   window = new sf::Window(sf::VideoMode(800, 600), "OpenGL");
+   window = new sf::Window(sf::VideoMode(600, 600), "OpenGL");
    window->setVerticalSyncEnabled(true);
 
    renderer = new Renderer();

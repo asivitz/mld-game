@@ -105,6 +105,7 @@ void Renderer::draw()
    glUniformMatrix4fv(program->locationOfUniform("viewMat"), 1, GL_FALSE, viewMatrix);
    glUniform4f(program->locationOfUniform("color"), 1.0, 1.0, 1.0, 1.0);
 
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
    glEnable(GL_BLEND);
    executeCommands();
    glDisable(GL_BLEND);

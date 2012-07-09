@@ -1,7 +1,9 @@
-$: << File.expand_path(File.join(File.dirname(__FILE__),))
+#!/usr/bin/env ruby
 
-require 'ext/engine'
-require 'matrix_graphics'
+#$: << File.expand_path(File.join(File.dirname(__FILE__),))
+
+require_relative 'ext/engine'
+require_relative 'matrix_graphics'
 
 class Player
    attr_accessor :x,:y, :ximp, :yimp
@@ -12,7 +14,7 @@ class Player
       @ximp = 0.0
       @yimp = 0.0
 
-      @texid = $platform.loadImage "images/bossfire.png"
+      @texid = $platform.loadImage "images/triangle.png"
    end
    
    def mat
