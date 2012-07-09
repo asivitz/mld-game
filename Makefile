@@ -1,15 +1,18 @@
-FLAGS=-g
+CFLAGS=-g -c -Wall
+LDFLAGS=-lglfw -framework Cocoa -framework OpenGL
 
-all: engine
+SOURCES=main.cpp ShaderProgram.cpp Renderer.cpp Platform.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
+EXECUTABLE=bin/engine
 
-engine: bin/ShaderProgram.o bin/Renderer.o
-	c++ $(FLAGS) main.cpp bin/ShaderProgram.o bin/Renderer.o -lglfw -framework Cocoa -framework OpenGL -o bin/engine
 
-bin/ShaderProgram.o: ShaderProgram.h ShaderProgram.cpp
-	c++ $(FLAGS) -c ShaderProgram.cpp -o bin/ShaderProgram.o
+all: $(SOURCES) $(EXECUTABLE)
 
-bin/Renderer.o: Renderer.h Renderer.cpp bin/ShaderProgram.o
-	c++ $(FLAGS) -c Renderer.cpp -o bin/Renderer.o
+$(EXECUTABLE): $(OBJECTS)
+	c++ $(LDFLAGS) $(OBJECTS) -o $@
+
+.cpp.o:
+	c++ $(CFLAGS) $< -o $@
 
 clean:
-	rm bin/engine bin/*.o
+	rm bin/engine *.o

@@ -27,6 +27,7 @@ class Renderer
    void addCommand(float m[16]);
    void executeCommands();
    void setupSquareDrawing();
+   void draw();
 };
 
 #endif

@@ -87,3 +87,13 @@ void Renderer::executeCommands()
       commands.pop();
    }
 }
+
+void Renderer::draw()
+{
+   glClear( GL_COLOR_BUFFER_BIT );
+
+   executeCommands();
+
+   // Swap front and back rendering buffers
+   glfwSwapBuffers();
+}
