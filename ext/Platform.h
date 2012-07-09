@@ -3,6 +3,9 @@
 
 #include <GL/glfw.h>
 #include "Renderer.h"
+#include "rice/Array.hpp"
+
+using namespace Rice;
 
 class Platform
 {
@@ -12,6 +15,7 @@ class Platform
    Platform();
    ~Platform();
    void update();
+   void addDrawCommand(Array a);
 };
 
 #endif
