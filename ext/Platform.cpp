@@ -2,6 +2,8 @@
 
 #include "rice/Class.hpp"
 #include "rice/String.hpp"
+#include "rice/Constructor.hpp"
+#include "rice/Data_Type.hpp"
 
 using namespace Rice;
 
@@ -33,7 +35,7 @@ void Platform::update()
 }
 
    extern "C"
-void Init_Platform()
+void Init_engine()
 {
    Data_Type<Platform> rb_cPlatform =
       define_class<Platform>("Platform")
