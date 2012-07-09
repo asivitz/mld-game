@@ -3,9 +3,48 @@ $: << File.expand_path(File.join(File.dirname(__FILE__),))
 require 'ext/engine'
 require 'matrix_graphics'
 
+class Player
+   attr_accessor :x,:y, :ximp, :yimp
+
+   def initialize
+      @x = 0.0
+      @y = 0.0
+      @ximp = 0.0
+      @yimp = 0.0
+   end
+   
+   def mat
+      #p "mat!"
+      #p "x: #{@x}"
+      m = Matrix.identity(4)
+      m = m.translate(@x,@y,0)
+      m = m.scale(20,20,1)
+   end
+end
+
+$one = Player.new
+
 class Platform
+   def key_map
+      @key_map ||= {}
+   end
+
    def key_pressed code
-      p code
+      key_map[code] = true
+   end
+
+   def key_released code
+      key_map[code] = nil
+   end
+
+   def process_input
+      if key_map[71]
+         $one.ximp = -1.0
+      elsif key_map[72]
+         $one.ximp = 1.0
+      else
+         $one.ximp = 0
+      end
    end
 end
 
@@ -18,11 +57,11 @@ view = Matrix.ortho(-150, 150, -150, 150, -30, 1)
 
 platform.setViewMatrix(view.flatten)
 
-model = Matrix.identity(4)
-model = model.scale(50, 50, 1)
-
 while platform.isWindowOpen
-   model = model.rotate(0.1)
+   model = $one.mat
    platform.addDrawCommand(model.flatten)
    platform.update
+
+   platform.process_input
+   $one.x += $one.ximp
 end

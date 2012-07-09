@@ -36,6 +36,10 @@ void Platform::update()
       {
          getSelf().call("key_pressed", (int)event.key.code);
       }
+      else if (event.type == sf::Event::KeyReleased)
+      {
+         getSelf().call("key_released", (int)event.key.code);
+      }
    }
 
    renderer->draw();

@@ -12,11 +12,7 @@ class Matrix
       Matrix[[x,0,0,0], [0,y,0,0], [0,0,z,0],[0,0,0,1]] * self
    end
 
-   def translate(mat, x, y, z)
-      Matrix[[1,0,0,0], [0,1,0,0], [0,0,1,0],[x,y,z,1]] * self
-   end
-
-   def translate(mat, x, y, z)
+   def translate(x, y, z)
       Matrix[[1,0,0,0], [0,1,0,0], [0,0,1,0],[x,y,z,1]] * self
    end
 
