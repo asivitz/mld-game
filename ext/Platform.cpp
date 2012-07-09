@@ -12,16 +12,8 @@ using namespace std;
 
 Platform::Platform()
 {
-   if( !glfwInit() )
-   {
-      exit( EXIT_FAILURE );
-   }
-   // Open an OpenGL window
-   if( !glfwOpenWindow( 300,300, 0,0,0,0,0,0, GLFW_WINDOW ) )
-   {
-      glfwTerminate();
-      exit( EXIT_FAILURE );
-   }
+   window = new sf::Window(sf::VideoMode(800, 600), "OpenGL");
+   window->setVerticalSyncEnabled(true);
 
    renderer = new Renderer();
 }
@@ -29,12 +21,13 @@ Platform::Platform()
 Platform::~Platform()
 {
    delete renderer;
-   glfwTerminate();
+   delete window;
 }
 
 void Platform::update()
 {
    renderer->draw();
+   window->display();
 }
 
 void Platform::addDrawCommand(Array a)
@@ -56,7 +49,6 @@ void Platform::setViewMatrix(Array a)
    if (a.size() == 16)
    {
       VALUE * carr = a.to_c_array();
-      float m[16];
       for (int i = 0; i < 16; i++)
       {
          renderer->viewMatrix[i] = (float)NUM2DBL(carr[i]);

@@ -105,7 +105,4 @@ void Renderer::draw()
    glUniform4f(program->locationOfUniform("color"), 1.0, 1.0, 1.0, 1.0);
 
    executeCommands();
-
-   // Swap front and back rendering buffers
-   glfwSwapBuffers();
 }

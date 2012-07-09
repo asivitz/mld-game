@@ -1,7 +1,8 @@
 #ifndef RENDERER_H_
 #define RENDERER_H_
 
-#include <GL/glfw.h>
+#include <SFML/Window.hpp>
+#include <SFML/OpenGL.hpp>
 #include "ShaderProgram.h"
 #include <queue>
 
