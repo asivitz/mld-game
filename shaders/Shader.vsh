@@ -12,7 +12,7 @@ attribute vec2 texCoords;
 uniform mat4 modelMat;
 uniform mat4 viewMat;
 
-varying mediump vec2 texCoordsVarying;
+varying vec2 texCoordsVarying;
 
 void main()
 {

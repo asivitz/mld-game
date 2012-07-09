@@ -1,10 +1,10 @@
 all: engine
 
-engine: ShaderProgram.o
-	c++ main.cpp ShaderProgram.o -lglfw -framework Cocoa -framework OpenGL -o bin/engine
+engine: bin/ShaderProgram.o
+	c++ main.cpp bin/ShaderProgram.o -lglfw -framework Cocoa -framework OpenGL -o bin/engine
 
-ShaderProgram.o: ShaderProgram.h ShaderProgram.cpp
-	c++ -c ShaderProgram.cpp
+bin/ShaderProgram.o: ShaderProgram.h ShaderProgram.cpp
+	c++ -c ShaderProgram.cpp -o bin/ShaderProgram.o
 
 clean:
-	rm bin/engine
+	rm bin/engine bin/*.o

@@ -43,7 +43,7 @@ void setupSquareDrawing()
    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(boxIndices), boxIndices, GL_STATIC_DRAW);
 
 
-   ShaderProgram * program = makeProgram("Shader.vsh", "SolidColor.fsh");
+   ShaderProgram * program = makeProgram("shaders/Shader.vsh", "shaders/SolidColor.fsh");
    if (!program)
    {
       cout << "Couldn't create shader" << endl;

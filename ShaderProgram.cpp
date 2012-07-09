@@ -35,14 +35,14 @@ int ShaderProgram::linkProgram()
       if(infoLen > 1) {
          char* infoLog = (char *)malloc(infoLen * sizeof(char));
          glGetProgramInfoLog(m_programID, infoLen, NULL, infoLog);
-         cout << "****ERROR LINKING SHADER PROGRAM:\n\t" << infoLog;
+         cout << "****ERROR LINKING SHADER PROGRAM:\n\t" << infoLog << endl;
          free(infoLog);
          return 1;
       }
    }
 
 #ifdef SHADER_DEBUG
-   cout << "Shader Program linked";
+   cout << "Shader Program linked" << endl;
 #endif
    return 0;
 }
@@ -67,7 +67,7 @@ int ShaderProgram::loadAttributeMap()
       GLint loc = glGetAttribLocation(m_programID, nameBuf);
       string attribName(nameBuf);
 #ifdef SHADER_DEBUG
-      cout << "Attribute \"" << attribName << "\" using index:" << loc;
+      cout << "Attribute \"" << attribName << "\" using index:" << loc << endl;
 #endif
       m_attributeMap[attribName] = loc;
    }
@@ -158,7 +158,7 @@ char * getString(const char * fileName)
    t.seekg(0, std::ios::end);    // go to the end
    length = t.tellg();           // report location (this is the length)
    t.seekg(0, std::ios::beg);    // go back to the beginning
-   char * buffer = new char[length];    // allocate memory for a buffer of appropriate dimension
+   char * buffer = new char[length + 1]();    // allocate memory for a buffer of appropriate dimension
    t.read(buffer, length);       // read the whole file into the buffer
    t.close();                    // close file handle
    return buffer;
@@ -191,7 +191,7 @@ GLint compileShader(const char * fileName, GLenum type)
          {
             char* infoLog = (char *)malloc(infoLen * sizeof(char));
             glGetShaderInfoLog(shaderID, infoLen, NULL, infoLog);
-            cout << "****ERROR COMPILING SHADER(" << fileName << ")" << endl << infoLog;
+            cout << "****ERROR COMPILING SHADER(" << fileName << ")" << endl << infoLog << endl;
             free(infoLog);
          }
          glDeleteShader(shaderID);
