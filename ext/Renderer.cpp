@@ -76,6 +76,11 @@ void Renderer::addCommand(float m[16])
    commands.push(command);
 }
 
+void Renderer::commitViewMatrix()
+{
+   glUniformMatrix4fv(program->locationOfUniform("viewMat"), 1, GL_FALSE, viewMatrix);
+}
+
 void Renderer::executeCommands()
 {
    while (!commands.empty())
@@ -90,7 +95,14 @@ void Renderer::executeCommands()
 
 void Renderer::draw()
 {
-   glClear( GL_COLOR_BUFFER_BIT );
+   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+   glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
+
+   glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+
+   glUniformMatrix4fv(program->locationOfUniform("viewMat"), 1, GL_FALSE, viewMatrix);
+   glUniform4f(program->locationOfUniform("color"), 1.0, 1.0, 1.0, 1.0);
 
    executeCommands();
 

@@ -19,6 +19,8 @@ ShaderProgram::ShaderProgram(GLint vertShader, GLint fragShader)
    m_fragShaderID = fragShader;
    linkProgram();
    loadAttributeMap();
+   texUniformLocation = 0;
+   modelMatUniformLocation = 0;
 }
 
 int ShaderProgram::linkProgram()
@@ -84,6 +86,7 @@ GLint ShaderProgram::indexForAttribute(const char * a_attributeName)
 GLint ShaderProgram::locationOfUniform(const char * inUniformName)
 {
    GLint loc = glGetUniformLocation(m_programID, inUniformName);
+   //loc may be -1 if uniform is optimized out. not necessarily an error
    return loc;
    /*
    NSNumber * result = [m_uniformMap objectForKey:inUniformName];

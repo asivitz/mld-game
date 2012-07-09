@@ -49,12 +49,19 @@ void Platform::addDrawCommand(Array a)
       }
       renderer->addCommand(m);
    }
-   //Array::iterator it = a.begin();
-   //Array::iterator end = a.end();
-   //for(; it != end; ++it)
-   //{
-      //std::cout << *it << std::endl;
-   //}
+}
+
+void Platform::setViewMatrix(Array a)
+{
+   if (a.size() == 16)
+   {
+      VALUE * carr = a.to_c_array();
+      float m[16];
+      for (int i = 0; i < 16; i++)
+      {
+         renderer->viewMatrix[i] = (float)NUM2DBL(carr[i]);
+      }
+   }
 }
 
    extern "C"
@@ -64,6 +71,7 @@ void Init_engine()
       define_class<Platform>("Platform")
       .define_constructor(Constructor<Platform>())
       .define_method("addDrawCommand", &Platform::addDrawCommand)
+      .define_method("setViewMatrix", &Platform::setViewMatrix)
       .define_method("update", &Platform::update);
 
    /*

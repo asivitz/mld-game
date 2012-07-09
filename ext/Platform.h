@@ -16,6 +16,7 @@ class Platform
    ~Platform();
    void update();
    void addDrawCommand(Array a);
+   void setViewMatrix(Array a);
 };
 
 #endif

@@ -27,7 +27,10 @@ class Renderer
    void addCommand(float m[16]);
    void executeCommands();
    void setupSquareDrawing();
+   void commitViewMatrix();
    void draw();
+
+   float viewMatrix[16];
 };
 
 #endif
