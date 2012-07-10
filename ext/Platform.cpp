@@ -19,13 +19,27 @@ Platform::Platform(Object self) : Rice::Director(self)
    window->setVerticalSyncEnabled(true);
 
    renderer = new Renderer();
+   physics = new Physics();
 
+   ShaderProgram * program = makeProgram("shaders/Shader.vsh", "shaders/SolidColor.fsh");
+   if (program)
+   {
+      physics->m_debugDraw->shaderProgram = program;
+   }
+   else
+      cout << "Couldn't create shader" << endl;
 }
 
 Platform::~Platform()
 {
    delete renderer;
    delete window;
+}
+
+void Platform::addWall(float x, float y, float xextens, float yextens)
+{
+   if (physics)
+      physics->addWall(vec2(x,y), vec2(xextens, yextens));
 }
 
 void Platform::update()
@@ -46,7 +60,20 @@ void Platform::update()
       }
    }
 
+   bool draw_debug = true;
    renderer->draw();
+   if (draw_debug)
+   {
+      ShaderProgram * prog = physics->m_debugDraw->shaderProgram;
+      prog->setAsActive();
+      float model[16] = {1,0,0,0,
+         0,1,0,0,
+         0,0,1,0,
+         0,0,0,1};
+      glUniformMatrix4fv(prog->locationOfUniform("viewMat"), 1, GL_FALSE, renderer->viewMatrix);
+      glUniformMatrix4fv(prog->locationOfUniform("modelMat"), 1, GL_FALSE, model);
+      physics->debugDraw();
+   }
    window->display();
 }
 
@@ -137,6 +164,7 @@ void Init_engine()
       .define_method("setViewMatrix", &Platform::setViewMatrix)
       .define_method("isWindowOpen", &Platform::isWindowOpen)
       .define_method("loadImage", &Platform::loadImage)
+      .define_method("addWall", &Platform::addWall)
       .define_method("update", &Platform::update);
 
    /*

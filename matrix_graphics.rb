@@ -1,6 +1,27 @@
 require 'matrix'
 
+def vec2(x,y)
+   Matrix.column_vector([x,y])
+end
+
 class Matrix
+   #vector stuff
+   def x
+      self[0,0]
+   end
+
+   def x=(val)
+      self[0,0] = val
+   end
+   
+   def y
+      self[1,0]
+   end
+
+   def y=(val)
+      self[1,0] = val
+   end
+
    def Matrix.ortho(left, right, bottom, top, near, far)
       Matrix[[2.0/(right - left), 0, 0, -(right + left)/(right - left)],
          [0, 2.0/(top - bottom), 0, -(top + bottom)/(top - bottom)],

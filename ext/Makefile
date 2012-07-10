@@ -95,9 +95,9 @@ warnflags = -Wextra -Wno-unused-parameter -Wno-parentheses -Wpointer-arith -Wwri
 CFLAGS   = -fno-common $(cflags)  -fno-common -pipe 
 INCFLAGS = -I. -I$(arch_hdrdir) -I$(hdrdir)/ruby/backward -I$(hdrdir) -I$(srcdir)
 DEFS     = 
-CPPFLAGS =  -D_XOPEN_SOURCE -D_DARWIN_C_SOURCE $(DEFS) $(cppflags)  -I/Users/axis/.rvm/gems/ruby-1.9.2-p290/gems/rice-1.4.3/ruby/lib/include
+CPPFLAGS =  -I/Users/axis/Development/Box2D_v2.2.1/ -D_XOPEN_SOURCE -D_DARWIN_C_SOURCE $(DEFS) $(cppflags)  -I/Users/axis/.rvm/gems/ruby-1.9.2-p290/gems/rice-1.4.3/ruby/lib/include
 CXXFLAGS = $(CFLAGS)  -Wall -g
-ldflags  = -L.   -L/Users/axis/.rvm/gems/ruby-1.9.2-p290/gems/rice-1.4.3/ruby/lib/lib
+ldflags  = -L.   -L/Users/axis/.rvm/gems/ruby-1.9.2-p290/gems/rice-1.4.3/ruby/lib/lib -framework OpenGL -framework SFML -framework sfml-graphics -framework sfml-window -framework sfml-system -lBox2D
 dldflags = -Wl,-undefined,dynamic_lookup -Wl,-multiply_defined,suppress -Wl,-flat_namespace
 ARCH_FLAG = 
 DLDFLAGS = $(ldflags) $(dldflags)
@@ -130,8 +130,8 @@ preload =
 
 CXX = g++
 
-libpath = . $(libdir)
-LIBPATH =  -L. -L$(libdir)
+libpath = . $(libdir) /Users/axis/Development/Box2D_v2.2.1/Build/Box2D/
+LIBPATH =  -L. -L$(libdir) -L/Users/axis/Development/Box2D_v2.2.1/Build/Box2D/
 DEFFILE = 
 
 CLEANFILES = mkmf.log
@@ -141,10 +141,10 @@ DISTCLEANDIRS =
 extout = 
 extout_prefix = 
 target_prefix = 
-LOCAL_LIBS = -framework OpenGL -framework Cocoa -framework SFML -framework sfml-system -framework sfml-window -framework sfml-graphics
+LOCAL_LIBS = 
 LIBS = -lrice -lruby.1.9.1 -lpthread -ldl -lobjc 
-SRCS = Platform.cpp Renderer.cpp ShaderProgram.cpp
-OBJS = Platform.o Renderer.o ShaderProgram.o
+SRCS = GLES-Render.cpp Physics.cpp Platform.cpp Renderer.cpp ShaderProgram.cpp
+OBJS = GLES-Render.o Physics.o Platform.o Renderer.o ShaderProgram.o
 TARGET = engine
 DLLIB = $(TARGET).bundle
 EXTSTATIC = 

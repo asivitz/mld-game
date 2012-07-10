@@ -102,8 +102,13 @@ void Renderer::draw()
    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 
+   program->setAsActive();
    glUniformMatrix4fv(program->locationOfUniform("viewMat"), 1, GL_FALSE, viewMatrix);
    glUniform4f(program->locationOfUniform("color"), 1.0, 1.0, 1.0, 1.0);
+
+   glVertexAttribPointer(program->indexForAttribute("position"), 2, GL_FLOAT, 0, 0, 0);
+   glEnableVertexAttribArray(program->indexForAttribute("position"));
+   
 
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
    glEnable(GL_BLEND);
