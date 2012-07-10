@@ -46,8 +46,10 @@ def update
 end
 
 $platform = Platform.new
-$platform.addWall(10,10,100,10)
+wall = $platform.addWall(10,10,100,10)
 $platform.addWall(10,40,100,10)
+
+grenade = $platform.addGrenade(10,60,5)
 
 $running = true
 $one = Player.new

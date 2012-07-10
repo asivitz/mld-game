@@ -1,3 +1,5 @@
+#ifndef _PHYSICS__H_
+#define _PHYSICS__H_
 //
 //  Physics.h
 //  Button
@@ -6,8 +8,8 @@
 //  Copyright 2010 __MyCompanyName__. All rights reserved.
 //
 
-#import <Box2D/Box2D.h>
-#import "GLES-Render.h"
+#include <Box2D/Box2D.h>
+#include "GLES-Render.h"
 //#import "BContactListener.h"
 
 //#import <vector>
@@ -49,8 +51,7 @@ public:
    b2Body * addParticle(vec2 pos);
    b2Body * addSensor(vec2 pos, vec2 extens);
    b2Body * addWormSection(vec2 pos, float radius);
-   b2Body * addProjectile(vec2 pos);
-   b2Body * addProjectile(vec2 pos, float size);
+   b2Body * addGrenade(vec2 pos, float size);
    b2Body * addEmptyBody(vec2 pos);
    b2Body * addDummy(vec2 pos, vec2 extens);
    void remove(b2Body * obj);
@@ -64,3 +65,5 @@ vec2 rotate(vec2 inVec, float angle);
 vec2 randomOffset();
 vec2 lerp(vec2 one, vec2 two, float interp);
 vec2 centerPoint(vec2 inPoint);
+
+#endif

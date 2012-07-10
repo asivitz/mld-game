@@ -10,6 +10,8 @@
 #include <SFML/Graphics.hpp>
 //#include <SFML/Image.hpp>
 
+#include "Body.h"
+
 using namespace Rice;
 using namespace std;
 
@@ -36,10 +38,30 @@ Platform::~Platform()
    delete window;
 }
 
-void Platform::addWall(float x, float y, float xextens, float yextens)
+Object Platform::addWall(float x, float y, float xextens, float yextens)
 {
    if (physics)
-      physics->addWall(vec2(x,y), vec2(xextens, yextens));
+   {
+      b2Body * b2body = physics->addWall(vec2(x,y), vec2(xextens, yextens));
+      Body * body = new Body();
+      body->body = b2body;
+      Data_Object<Body> obj(body);
+      return obj;
+   }
+   return NULL;
+}
+
+Object Platform::addGrenade(float x, float y, float size)
+{
+   if (physics)
+   {
+      b2Body * b2body = physics->addGrenade(vec2(x,y), size);
+      Body * body = new Body();
+      body->body = b2body;
+      Data_Object<Body> obj(body);
+      return obj;
+   }
+   return NULL;
 }
 
 void Platform::update()
@@ -165,7 +187,12 @@ void Init_engine()
       .define_method("isWindowOpen", &Platform::isWindowOpen)
       .define_method("loadImage", &Platform::loadImage)
       .define_method("addWall", &Platform::addWall)
+      .define_method("addGrenade", &Platform::addGrenade)
       .define_method("update", &Platform::update);
+
+   Data_Type<Body> rb_cBody =
+      define_class<Body>("Body")
+      .define_method("pos", &Body::pos);
 
    /*
    Data_Type<Renderer> rb_cRenderer =

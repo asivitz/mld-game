@@ -292,13 +292,13 @@ b2Body * Physics::addParticle(vec2 pos)
     return body;
 }
 
-b2Body * Physics::addProjectile(vec2 pos, float size)
+b2Body * Physics::addGrenade(vec2 pos, float size)
 {
     b2BodyDef bodyDef;
 
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(pos.x, pos.y);
-    bodyDef.fixedRotation = true;
+    //bodyDef.fixedRotation = true;
     bodyDef.bullet = true;
 
     b2Body* body = boxworld->CreateBody(&bodyDef);
@@ -309,15 +309,10 @@ b2Body * Physics::addProjectile(vec2 pos, float size)
 
     fixtureDef.shape = &dynamicCircle;
 
-    b2Filter filter;
-    filter.categoryBits = 0x0020;
-    filter.maskBits = 0xFFFF;
-    filter.groupIndex = 0;
-
-    fixtureDef.filter = filter;
-    fixtureDef.density = 0.1f;
+    fixtureDef.filter = defaultFilter;
+    fixtureDef.density = 1.0f;
     fixtureDef.friction = 10.0f;
-    fixtureDef.restitution = 0.1;
+    fixtureDef.restitution = 1.0;
     body->CreateFixture(&fixtureDef);
 
     return body;
