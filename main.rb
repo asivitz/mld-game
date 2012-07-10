@@ -19,7 +19,7 @@ class Player
    def mat
       m = Matrix.identity(4)
       m = m.translate(@pos.x,@pos.y,0)
-      m = m.scale(40,40,1)
+      m = m.scale(4,4,1)
    end
 
    def draw
@@ -46,21 +46,31 @@ def update
 end
 
 $platform = Platform.new
-wall = $platform.addWall(10,10,100,10)
-$platform.addWall(10,40,100,10)
+wall = $platform.addWall(0,0,10,1)
 
-grenade = $platform.addGrenade(10,60,5)
+grenade = $platform.addGrenade(0,10,1.0)
 
 $running = true
 $one = Player.new
 
-view = Matrix.ortho(-150, 150, -150, 150, -30, 1)
+view = Matrix.ortho(-15, 15, -15, 15, -30, 1)
 
 $platform.setViewMatrix(view.flatten)
 
+timeStep = 1/60.0
+lastTime = Time.now
+accumTime = 0.0
 while $platform.isWindowOpen and $running
+   currentTime = Time.now
+   accumTime += (currentTime - lastTime).to_f
+   lastTime = currentTime
+
+   while accumTime >= timeStep
+      $platform.update(timeStep)
+      accumTime -= timeStep
+   end
    $one.draw
-   $platform.update
+   $platform.draw
 
    process_input $platform.key_map
    update

@@ -19,7 +19,8 @@ class Platform : public Rice::Director
    public:
    Platform(Object self);
    ~Platform();
-   void update();
+   void update(double time);
+   void draw();
    void addDrawCommand(int texid, Array a);
    void setViewMatrix(Array a);
    bool isWindowOpen();

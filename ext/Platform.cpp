@@ -64,7 +64,7 @@ Object Platform::addGrenade(float x, float y, float size)
    return NULL;
 }
 
-void Platform::update()
+void Platform::draw()
 {
    sf::Event event;
    while (window->pollEvent(event))
@@ -97,6 +97,11 @@ void Platform::update()
       physics->debugDraw();
    }
    window->display();
+}
+
+void Platform::update(double time)
+{
+   physics->tick(time);
 }
 
 bool Platform::isWindowOpen()
@@ -188,7 +193,8 @@ void Init_engine()
       .define_method("loadImage", &Platform::loadImage)
       .define_method("addWall", &Platform::addWall)
       .define_method("addGrenade", &Platform::addGrenade)
-      .define_method("update", &Platform::update);
+      .define_method("update", &Platform::update)
+      .define_method("draw", &Platform::draw);
 
    Data_Type<Body> rb_cBody =
       define_class<Body>("Body")

@@ -53,15 +53,16 @@ vec2 rotate(vec2 inVec, float angle)
 Physics::Physics()
 {
 
-    boxworld = new b2World(VECZERO);
-    //m_contactListener = new BContactListener();
-    //boxworld->SetContactListener(m_contactListener);
+   vec2 gravity = vec2(0.0f, -9.8f);
+   boxworld = new b2World(gravity);
+   //m_contactListener = new BContactListener();
+   //boxworld->SetContactListener(m_contactListener);
 
-    defaultFilter.categoryBits = 0x0001;
-    defaultFilter.maskBits = 0xFFFF;
-    defaultFilter.groupIndex = 0;
+   defaultFilter.categoryBits = 0x0001;
+   defaultFilter.maskBits = 0xFFFF;
+   defaultFilter.groupIndex = 0;
 
-    initDebugDrawing();
+   initDebugDrawing();
 }
 
 void Physics::debugDraw()
@@ -106,10 +107,11 @@ b2Body * Physics::addWall(vec2 pos, vec2 extens)
     fixtureDef.shape = &crateBox;
     fixtureDef.filter = defaultFilter;
 
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.0f;
-    fixtureDef.restitution = 0.8;
-    body->CreateFixture(&fixtureDef);
+    //fixtureDef.density = 1.0f;
+    //fixtureDef.friction = 0.0f;
+    //fixtureDef.restitution = 0.8;
+    body->CreateFixture(&crateBox, 0.0);
+    //body->CreateFixture(&fixtureDef);
 
     return body;
 }
@@ -299,7 +301,7 @@ b2Body * Physics::addGrenade(vec2 pos, float size)
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(pos.x, pos.y);
     //bodyDef.fixedRotation = true;
-    bodyDef.bullet = true;
+    //bodyDef.bullet = true;
 
     b2Body* body = boxworld->CreateBody(&bodyDef);
     b2CircleShape dynamicCircle;
@@ -311,8 +313,34 @@ b2Body * Physics::addGrenade(vec2 pos, float size)
 
     fixtureDef.filter = defaultFilter;
     fixtureDef.density = 1.0f;
-    fixtureDef.friction = 10.0f;
-    fixtureDef.restitution = 1.0;
+    fixtureDef.friction = 0.3f;
+    fixtureDef.restitution = 0.3f;
+    body->CreateFixture(&fixtureDef);
+
+    return body;
+}
+
+b2Body * Physics::addPlayer(vec2 pos, float size)
+{
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position.Set(pos.x, pos.y);
+    bodyDef.fixedRotation = true;
+
+    b2Body* body = boxworld->CreateBody(&bodyDef);
+
+    b2PolygonShape crateBox;
+
+    crateBox.SetAsBox(0.5 * size, size);
+
+    b2FixtureDef fixtureDef;
+
+    fixtureDef.shape = &crateBox;
+
+    fixtureDef.filter = defaultFilter;
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.3f;
+    fixtureDef.restitution = 0.3f;
     body->CreateFixture(&fixtureDef);
 
     return body;

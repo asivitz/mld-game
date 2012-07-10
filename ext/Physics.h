@@ -52,6 +52,7 @@ public:
    b2Body * addSensor(vec2 pos, vec2 extens);
    b2Body * addWormSection(vec2 pos, float radius);
    b2Body * addGrenade(vec2 pos, float size);
+   b2Body * addPlayer(vec2 pos, float size);
    b2Body * addEmptyBody(vec2 pos);
    b2Body * addDummy(vec2 pos, vec2 extens);
    void remove(b2Body * obj);
