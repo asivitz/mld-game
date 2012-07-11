@@ -10,10 +10,10 @@
 
 #include <Box2D/Box2D.h>
 #include "GLES-Render.h"
+#include "BContactListener.h"
 #include "rice/Class.hpp"
 
 using namespace Rice;
-//#import "BContactListener.h"
 
 //#import <vector>
 
@@ -34,7 +34,7 @@ using namespace std;
 class Physics
 {
 private:
-   //BContactListener * m_contactListener;
+   BContactListener * m_contactListener;
 
 public:
    b2Filter defaultFilter;

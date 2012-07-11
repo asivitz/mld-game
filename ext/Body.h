@@ -20,6 +20,7 @@ class Body // : public Rice::Director
    void push(vec2 vel);
    void setVel(vec2 vel);
    Object getVel();
+   int getId();
 };
 
 template<>

@@ -1,4 +1,5 @@
 #include "Body.h"
+#include <inttypes.h>
 #include <iostream>
 
 #include "rice/Class.hpp"
@@ -91,4 +92,9 @@ Object Body::getVel()
 void Body::setVel(vec2 vel)
 {
    body->SetLinearVelocity(vel);
+}
+
+int Body::getId()
+{
+   return (intptr_t)body->GetUserData();
 }

@@ -10,7 +10,7 @@
 #include "Body.h"
 
 #import <Box2D/Box2D.h>
-//#import "BContactListener.h"
+#import "BContactListener.h"
 //#import "RayCastCallbacks.h"
 //#import "QueryCallbacks.h"
 //#import "global.h"
@@ -51,6 +51,12 @@ vec2 rotate(vec2 inVec, float angle)
    return res;
 }
 
+int globalId = 0;
+int getNewBodyId()
+{
+   return(globalId++);
+}
+
 /*
 template<>
 Rice::Object to_ruby<b2Body>(b2Body const & param) 
@@ -74,8 +80,8 @@ Physics::Physics()
 
    vec2 gravity = vec2(0.0f, -20.0f);
    boxworld = new b2World(gravity);
-   //m_contactListener = new BContactListener();
-   //boxworld->SetContactListener(m_contactListener);
+   m_contactListener = new BContactListener();
+   boxworld->SetContactListener(m_contactListener);
 
    defaultFilter.categoryBits = 0x0001;
    defaultFilter.maskBits = 0xFFFF;
@@ -116,6 +122,7 @@ Object Physics::addWall(vec2 pos, vec2 extens)
     bodyDef.position.Set(pos.x, pos.y);
 
     b2Body* body = boxworld->CreateBody(&bodyDef);
+    body->SetUserData((void *)getNewBodyId());
 
     b2PolygonShape crateBox;
 
@@ -233,6 +240,7 @@ Object Physics::addGrenade(vec2 pos, float size)
     //bodyDef.bullet = true;
 
     b2Body* body = boxworld->CreateBody(&bodyDef);
+    body->SetUserData((void *)getNewBodyId());
     b2CircleShape dynamicCircle;
     dynamicCircle.m_radius = size;
 
@@ -257,6 +265,7 @@ Object Physics::addPlayer(vec2 pos, float size)
     bodyDef.fixedRotation = true;
 
     b2Body* body = boxworld->CreateBody(&bodyDef);
+    body->SetUserData((void *)getNewBodyId());
 
     b2PolygonShape crateBox;
 

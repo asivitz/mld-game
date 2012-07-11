@@ -189,6 +189,7 @@ void Init_engine()
       .define_method("pos", &Body::pos)
       .define_method("vel", &Body::getVel)
       .define_method("vel=", &Body::setVel)
+      .define_method("id", &Body::getId)
       .define_method("push", &Body::push);
 
    /*

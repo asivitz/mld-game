@@ -1,4 +1,6 @@
 #platform is the game engine, not a real platform. bad name choice probably
+#most of the class is defined in the C++ extension.
+#this stuff is just extra hooks for input handling
 class Platform
    def key_map
       @key_map ||= {}

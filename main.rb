@@ -6,17 +6,22 @@ require_relative 'ext/engine'
 require_relative 'matrix_graphics'
 require_relative 'engine'
 
+# maps physics body ids to game objects
+$body_map = {}
+
 MAX_VEL = 5.0
 MOVE_IMP = 2.0
 JUMP_IMP = 20.0
 class Player
    attr_accessor :pos, :move_imp
+   attr_reader :body
 
    def initialize
       @move_imp = vec2(0.0,0.0)
 
       @texid = $platform.loadImage "images/triangle.png"
       @body = $platform.physics.addPlayer([0,5], 2.0)
+      $body_map[@body.id] = self
    end
    
    def mat
