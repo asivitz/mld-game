@@ -49,6 +49,24 @@ vec2 from_ruby<vec2>(Rice::Object x)
    return VECNULL;
 }
 
+
+/*
+template<>
+vec2 from_ruby<vec2>(Rice::Object x) 
+{
+   Array arr(x);
+   if (arr.size() == 2)
+   {
+      vec2 v;
+      VALUE * carr = arr.to_c_array();
+      v.x = NUM2DBL(carr[0]);
+      v.y = NUM2DBL(carr[1]);
+      return v;
+   }
+   return VECNULL;
+}
+*/
+
 Object Body::pos()
 {
    vec2 pos = body->GetPosition();

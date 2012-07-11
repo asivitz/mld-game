@@ -13,11 +13,17 @@ class Body // : public Rice::Director
 {
 
    public:
-   b2Body * body;
+   const b2Body * body;
    //Platform(Object self);
    //~Body(Object self);
    Object pos();
 };
+
+template<>
+Rice::Object to_ruby<vec2>(vec2 const & param);
+
+template<>
+vec2 from_ruby<vec2>(Rice::Object x);
 
 #endif
 

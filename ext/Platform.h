@@ -21,12 +21,11 @@ class Platform : public Rice::Director
    ~Platform();
    void update(double time);
    void draw();
+   Object getPhysics();
    void addDrawCommand(int texid, Array a);
    void setViewMatrix(Array a);
    bool isWindowOpen();
    int loadImage(string fileName);
-   Object addWall(float x, float y, float xextens, float yextens);
-   Object addGrenade(float x, float y, float size);
 };
 
 #endif

@@ -7,6 +7,7 @@
 //
 
 #import "Physics.h"
+#include "Body.h"
 
 #import <Box2D/Box2D.h>
 //#import "BContactListener.h"
@@ -50,6 +51,24 @@ vec2 rotate(vec2 inVec, float angle)
    return res;
 }
 
+/*
+template<>
+Rice::Object to_ruby<b2Body>(b2Body const & param) 
+{
+   Body body;
+   body.body = &param;
+   return to_ruby<Body>(body);
+}
+*/
+
+Rice::Object makeBody(b2Body * b2body)
+{
+   Body * body = new Body();
+   body->body = b2body;
+   Data_Object<Body> obj(body);
+   return obj;
+}
+
 Physics::Physics()
 {
 
@@ -90,7 +109,7 @@ void Physics::initDebugDrawing()
     boxworld->SetDebugDraw(m_debugDraw);
 }
 
-b2Body * Physics::addWall(vec2 pos, vec2 extens)
+Object Physics::addWall(vec2 pos, vec2 extens)
 {
     b2BodyDef bodyDef;
 
@@ -113,97 +132,7 @@ b2Body * Physics::addWall(vec2 pos, vec2 extens)
     body->CreateFixture(&crateBox, 0.0);
     //body->CreateFixture(&fixtureDef);
 
-    return body;
-}
-
-b2Body * Physics::addButton(vec2 pos, float size)
-{
-    b2BodyDef bodyDef;
-
-    bodyDef.type = b2_dynamicBody;
-    bodyDef.position.Set(pos.x, pos.y);
-    bodyDef.fixedRotation = true;
-
-    b2Body* body = boxworld->CreateBody(&bodyDef);
-
-    b2PolygonShape dynamicBox;
-
-    dynamicBox.SetAsBox(size, size);
-
-    b2FixtureDef fixtureDef;
-
-    fixtureDef.shape = &dynamicBox;
-
-    fixtureDef.filter = defaultFilter;
-    fixtureDef.density = 0.75f;
-    fixtureDef.friction = 0.0f;
-    fixtureDef.restitution = 1.0;
-    body->CreateFixture(&fixtureDef);
-
-    return body;
-}
-
-
-b2Body * Physics::addGrate(vec2 pos, vec2 extens)
-{
-    b2BodyDef bodyDef;
-
-    bodyDef.position.Set(pos.x, pos.y);
-
-    b2Body* body = boxworld->CreateBody(&bodyDef);
-
-    b2PolygonShape crateBox;
-
-    crateBox.SetAsBox(extens.x, extens.y);
-
-    b2FixtureDef fixtureDef;
-
-    fixtureDef.shape = &crateBox;
-
-    b2Filter filter;
-    filter.categoryBits = 0x0001;
-    filter.maskBits = 0xFF1F;
-    filter.groupIndex = 0;
-
-    fixtureDef.filter = filter;
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.0f;
-    fixtureDef.restitution = 0.8;
-    body->CreateFixture(&fixtureDef);
-
-    return body;
-}
-
-b2Body * Physics::addDoor(vec2 pos, vec2 extens)
-{
-    b2BodyDef bodyDef;
-
-    bodyDef.position.Set(pos.x, pos.y);
-    bodyDef.type = b2_kinematicBody;
-    bodyDef.fixedRotation = true;
-
-    b2Body* body = boxworld->CreateBody(&bodyDef);
-
-    b2PolygonShape crateBox;
-
-    crateBox.SetAsBox(extens.x, extens.y);
-
-    b2Filter filter;
-    filter.categoryBits = 0x0008;
-    filter.maskBits = 0x0036;
-    filter.groupIndex = 0;
-
-    b2FixtureDef fixtureDef;
-
-    fixtureDef.shape = &crateBox;
-    fixtureDef.filter = filter;
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.3f;
-    fixtureDef.restitution = 0.8;
-    body->CreateFixture(&fixtureDef);
-    body->SetSleepingAllowed(false);
-
-    return body;
+    return makeBody(body);
 }
 
 b2Body * Physics::addSensor(vec2 pos, vec2 extens)
@@ -294,7 +223,7 @@ b2Body * Physics::addParticle(vec2 pos)
     return body;
 }
 
-b2Body * Physics::addGrenade(vec2 pos, float size)
+Object Physics::addGrenade(vec2 pos, float size)
 {
     b2BodyDef bodyDef;
 
@@ -317,10 +246,10 @@ b2Body * Physics::addGrenade(vec2 pos, float size)
     fixtureDef.restitution = 0.3f;
     body->CreateFixture(&fixtureDef);
 
-    return body;
+    return makeBody(body);
 }
 
-b2Body * Physics::addPlayer(vec2 pos, float size)
+Object Physics::addPlayer(vec2 pos, float size)
 {
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
@@ -343,7 +272,7 @@ b2Body * Physics::addPlayer(vec2 pos, float size)
     fixtureDef.restitution = 0.3f;
     body->CreateFixture(&fixtureDef);
 
-    return body;
+    return makeBody(body);
 }
 
 /*

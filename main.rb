@@ -46,9 +46,9 @@ def update
 end
 
 $platform = Platform.new
-wall = $platform.addWall(0,0,10,1)
+wall = $platform.physics.addWall([0,0],[10,1])
 
-grenade = $platform.addGrenade(0,10,1.0)
+grenade = $platform.physics.addGrenade([0,10],1.0)
 
 $running = true
 $one = Player.new
@@ -57,6 +57,7 @@ view = Matrix.ortho(-15, 15, -15, 15, -30, 1)
 
 $platform.setViewMatrix(view.flatten)
 
+$phys = $platform.physics
 timeStep = 1/60.0
 lastTime = Time.now
 accumTime = 0.0
@@ -66,7 +67,7 @@ while $platform.isWindowOpen and $running
    lastTime = currentTime
 
    while accumTime >= timeStep
-      $platform.update(timeStep)
+      $phys.update(timeStep)
       accumTime -= timeStep
    end
    $one.draw

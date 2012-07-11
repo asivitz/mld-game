@@ -38,32 +38,6 @@ Platform::~Platform()
    delete window;
 }
 
-Object Platform::addWall(float x, float y, float xextens, float yextens)
-{
-   if (physics)
-   {
-      b2Body * b2body = physics->addWall(vec2(x,y), vec2(xextens, yextens));
-      Body * body = new Body();
-      body->body = b2body;
-      Data_Object<Body> obj(body);
-      return obj;
-   }
-   return NULL;
-}
-
-Object Platform::addGrenade(float x, float y, float size)
-{
-   if (physics)
-   {
-      b2Body * b2body = physics->addGrenade(vec2(x,y), size);
-      Body * body = new Body();
-      body->body = b2body;
-      Data_Object<Body> obj(body);
-      return obj;
-   }
-   return NULL;
-}
-
 void Platform::draw()
 {
    sf::Event event;
@@ -181,6 +155,11 @@ void Platform::setViewMatrix(Array a)
    }
 }
 
+Object Platform::getPhysics()
+{
+   return Rice::Data_Object<Physics>(physics, Rice::Data_Type<Physics>::klass(), 0, 0);
+}
+
    extern "C"
 void Init_engine()
 {
@@ -191,10 +170,18 @@ void Init_engine()
       .define_method("setViewMatrix", &Platform::setViewMatrix)
       .define_method("isWindowOpen", &Platform::isWindowOpen)
       .define_method("loadImage", &Platform::loadImage)
-      .define_method("addWall", &Platform::addWall)
-      .define_method("addGrenade", &Platform::addGrenade)
+      //.define_method("addWall", &Platform::addWall)
+      //.define_method("addGrenade", &Platform::addGrenade)
       .define_method("update", &Platform::update)
+      .define_method("physics", &Platform::getPhysics)
       .define_method("draw", &Platform::draw);
+
+   Data_Type<Physics> rb_cPhysics =
+      define_class<Physics>("Physics")
+      //.define_constructor(Constructor<Platform, Rice::Object>())
+      .define_method("addWall", &Physics::addWall)
+      .define_method("addGrenade", &Physics::addGrenade)
+      .define_method("update", &Physics::tick);
 
    Data_Type<Body> rb_cBody =
       define_class<Body>("Body")

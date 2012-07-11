@@ -10,6 +10,9 @@
 
 #include <Box2D/Box2D.h>
 #include "GLES-Render.h"
+#include "rice/Class.hpp"
+
+using namespace Rice;
 //#import "BContactListener.h"
 
 //#import <vector>
@@ -43,16 +46,12 @@ public:
    ~Physics();
    void initDebugDrawing();
    void debugDraw();
-   b2Body * addButton(vec2 pos, float size);
-   b2Body * addWall(vec2 pos, vec2 extens);
-   b2Body * addGrate(vec2 pos, vec2 extens);
-   b2Body * addDoor(vec2 pos, vec2 extens);
+   Object addWall(vec2 pos, vec2 extens);
    //b2Body * castRay(vec2 from, vec2 to);
    b2Body * addParticle(vec2 pos);
    b2Body * addSensor(vec2 pos, vec2 extens);
-   b2Body * addWormSection(vec2 pos, float radius);
-   b2Body * addGrenade(vec2 pos, float size);
-   b2Body * addPlayer(vec2 pos, float size);
+   Object addGrenade(vec2 pos, float size);
+   Object addPlayer(vec2 pos, float size);
    b2Body * addEmptyBody(vec2 pos);
    b2Body * addDummy(vec2 pos, vec2 extens);
    void remove(b2Body * obj);
