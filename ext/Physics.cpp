@@ -72,7 +72,7 @@ Rice::Object makeBody(b2Body * b2body)
 Physics::Physics()
 {
 
-   vec2 gravity = vec2(0.0f, -9.8f);
+   vec2 gravity = vec2(0.0f, -20.0f);
    boxworld = new b2World(gravity);
    //m_contactListener = new BContactListener();
    //boxworld->SetContactListener(m_contactListener);

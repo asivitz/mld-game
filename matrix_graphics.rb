@@ -4,6 +4,16 @@ def vec2(x,y)
    Matrix.column_vector([x,y])
 end
 
+class Array
+   def x
+      self[0]
+   end
+
+   def y
+      self[1]
+   end
+end
+
 class Matrix
    #vector stuff
    def x

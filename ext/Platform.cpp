@@ -181,11 +181,15 @@ void Init_engine()
       //.define_constructor(Constructor<Platform, Rice::Object>())
       .define_method("addWall", &Physics::addWall)
       .define_method("addGrenade", &Physics::addGrenade)
+      .define_method("addPlayer", &Physics::addPlayer)
       .define_method("update", &Physics::tick);
 
    Data_Type<Body> rb_cBody =
       define_class<Body>("Body")
-      .define_method("pos", &Body::pos);
+      .define_method("pos", &Body::pos)
+      .define_method("vel", &Body::getVel)
+      .define_method("vel=", &Body::setVel)
+      .define_method("push", &Body::push);
 
    /*
    Data_Type<Renderer> rb_cRenderer =

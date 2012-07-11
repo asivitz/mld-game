@@ -76,3 +76,19 @@ Object Body::pos()
    //arr.push(pos.y);
    //return arr;
 }
+
+void Body::push(vec2 vel)
+{
+   body->ApplyLinearImpulse(vel, VECZERO);
+}
+
+Object Body::getVel()
+{
+   vec2 vel = body->GetLinearVelocity();
+   return to_ruby<vec2>(vel);
+}
+
+void Body::setVel(vec2 vel)
+{
+   body->SetLinearVelocity(vel);
+}

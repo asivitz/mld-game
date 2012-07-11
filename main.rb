@@ -6,34 +6,56 @@ require_relative 'ext/engine'
 require_relative 'matrix_graphics'
 require_relative 'engine'
 
+MAX_VEL = 5.0
+MOVE_IMP = 2.0
+JUMP_IMP = 20.0
 class Player
    attr_accessor :pos, :move_imp
 
    def initialize
-      @pos = vec2(0.0,0.0)
       @move_imp = vec2(0.0,0.0)
 
       @texid = $platform.loadImage "images/triangle.png"
+      @body = $platform.physics.addPlayer([0,5], 2.0)
    end
    
    def mat
       m = Matrix.identity(4)
-      m = m.translate(@pos.x,@pos.y,0)
+      pos = @body.pos
+      m = m.translate(pos.x,pos.y,0)
       m = m.scale(4,4,1)
    end
 
    def draw
       $platform.addDrawCommand(@texid, self.mat.flatten)
    end
+
+   def move_right
+      if @body.vel.x < MAX_VEL
+         @body.push([MOVE_IMP,0.0])
+      end
+   end
+
+   def move_left
+      if @body.vel.x > -MAX_VEL
+         @body.push([-MOVE_IMP,0.0])
+      end
+   end
+
+   def jump
+      @body.push([0.0,JUMP_IMP])
+   end
 end
 
 def process_input key_map
    if key_map[71]
-      $one.move_imp.x = -1.0
+      $one.move_left
    elsif key_map[72]
-      $one.move_imp.x = 1.0
-   else
-      $one.move_imp.x = 0
+      $one.move_right
+   end
+
+   if key_map[73]
+      $one.jump
    end
 
    if key_map[16]
@@ -41,14 +63,10 @@ def process_input key_map
    end
 end
 
-def update
-   $one.pos += $one.move_imp
-end
-
 $platform = Platform.new
 wall = $platform.physics.addWall([0,0],[10,1])
 
-grenade = $platform.physics.addGrenade([0,10],1.0)
+$grenade = $platform.physics.addGrenade([0,10],1.0)
 
 $running = true
 $one = Player.new
@@ -74,5 +92,4 @@ while $platform.isWindowOpen and $running
    $platform.draw
 
    process_input $platform.key_map
-   update
 end
