@@ -48,6 +48,7 @@ public:
    void initDebugDrawing();
    void debugDraw();
    Object addWall(vec2 pos, vec2 extens);
+   Object addBoundaries(float left, float right, float bottom, float top);
    //b2Body * castRay(vec2 from, vec2 to);
    b2Body * addParticle(vec2 pos);
    b2Body * addSensor(vec2 pos, vec2 extens);

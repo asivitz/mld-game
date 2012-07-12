@@ -181,6 +181,7 @@ void Init_engine()
       .define_method("addWall", &Physics::addWall)
       .define_method("addGrenade", &Physics::addGrenade)
       .define_method("addPlayer", &Physics::addPlayer)
+      .define_method("addBoundaries", &Physics::addBoundaries)
       .define_method("update", &Physics::tick);
 
    Data_Type<Body> rb_cBody =

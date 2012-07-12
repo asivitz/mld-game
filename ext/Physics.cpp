@@ -116,6 +116,43 @@ void Physics::initDebugDrawing()
     boxworld->SetDebugDraw(m_debugDraw);
 }
 
+Object Physics::addBoundaries(float left, float right, float bottom, float top)
+{
+   b2Vec2 vertices[3];
+
+   vertices[0].Set(left, bottom);
+   vertices[1].Set(right, bottom);
+   vertices[2].Set(right, top);
+   vertices[3].Set(left, top);
+
+   int32 count = 4;
+
+   b2BodyDef bodyDef;
+
+   bodyDef.position.Set(0.0,0.0);
+
+   b2Body* body = boxworld->CreateBody(&bodyDef);
+   body->SetUserData((void *)getNewBodyId());
+
+   b2ChainShape crateBox;
+   crateBox.CreateLoop(vertices, count);
+
+   b2FixtureDef fixtureDef;
+
+   fixtureDef.shape = &crateBox;
+   fixtureDef.filter = defaultFilter;
+
+   fixtureDef.density = 1.0f;
+   fixtureDef.friction = 0.15f;
+   fixtureDef.restitution = 0.0;
+   body->CreateFixture(&fixtureDef);
+
+   return makeBody(body);
+}
+
+ 
+
+
 Object Physics::addWall(vec2 pos, vec2 extens)
 {
     b2BodyDef bodyDef;

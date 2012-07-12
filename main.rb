@@ -16,10 +16,10 @@ class Player < WorldObj
    attr_reader :body
    attr_accessor :num_standing_on_solid
 
-   def initialize
+   def initialize pos
       @texid = $platform.loadImage "2player\ shooter/images/redGuyLeft.png"
       #@texid = $platform.loadImage "images/triangle.png"
-      @body = $physics.addPlayer([0,5], 2.0)
+      @body = $physics.addPlayer(pos, 2.0)
       $body_map[@body.id] = self
       @num_standing_on_solid = 0
       @jump_time = Time.now
@@ -72,8 +72,10 @@ class Player < WorldObj
    end
 
    def update time
+      #factor = 1.0
+      #factor = 4.0 if @num_standing_on_solid > 0
       vel = $one.body.vel
-      vel.x *= 1.0 - 1.0 * time
+      vel.x *= 1.0 - 1.0 * time #* factor
       $one.body.vel = vel
    end
 end
@@ -97,9 +99,9 @@ end
 class Floor < WorldObj
    attr_reader :body
 
-   def initialize
+   def initialize pos
       #@texid = $platform.loadImage "2player\ shooter/images/redGuyLeft.png"
-      @body = $physics.addWall([0,0], [10.0, 1.0])
+      @body = $physics.addWall(pos, [10.0, 1.0])
       $body_map[@body.id] = self
    end
 
@@ -111,10 +113,24 @@ end
 class Grenade < WorldObj
    attr_reader :body
 
+   def initialize pos
+      #@texid = $platform.loadImage "2player\ shooter/images/redGuyLeft.png"
+      @body = $physics.addGrenade(pos,1.0)
+      $body_map[@body.id] = self
+   end
+end
+
+class Boundary < WorldObj
+   attr_reader :body
+
    def initialize
       #@texid = $platform.loadImage "2player\ shooter/images/redGuyLeft.png"
-      @body = $physics.addGrenade([0,10],1.0)
+      @body = $physics.addBoundaries(-28.0, 28.0, -28.0, 28.0)
       $body_map[@body.id] = self
+   end
+
+   def jump_platform
+      true # player can jump off of this
    end
 end
 
@@ -123,10 +139,11 @@ $physics = Physics.new
 $platform.physics = $physics
 
 $running = true
-$one = Player.new
-$floor = Floor.new
+$one = Player.new [0,10]
+$floor = Floor.new [0,0]
+$boundary = Boundary.new
 
-view = Matrix.ortho(-15, 15, -15, 15, -30, 1)
+view = Matrix.ortho(-30, 30, -30, 30, -30, 1)
 
 $platform.setViewMatrix(view.flatten)
 
