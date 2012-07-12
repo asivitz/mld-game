@@ -11,6 +11,10 @@
 #define __B_CONTACT_LISTENER_H_
 
 #include <Box2D/Box2D.h>
+#include "rice/Class.hpp"
+#include "rice/Data_Type.hpp"
+
+using namespace Rice;
 
 class BContactListener : public b2ContactListener
 {
@@ -20,6 +24,8 @@ class BContactListener : public b2ContactListener
         void EndContact(b2Contact* contact);
         void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
         void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
+
+        Object physObj;
 };
 
 #endif

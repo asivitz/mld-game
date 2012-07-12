@@ -16,9 +16,13 @@ void BContactListener::BeginContact(b2Contact* contact)
    //[contactHandler handleBeginContact:contact];
 
 
+   b2Body * bodyA = contact->GetFixtureA()->GetBody();
+   b2Body * bodyB = contact->GetFixtureB()->GetBody();
+
+   int enta = (intptr_t)bodyA->GetUserData();
+   int entb = (intptr_t)bodyB->GetUserData();
+
    /*
-    b2Body * bodyA = contact->GetFixtureA()->GetBody();
-    b2Body * bodyB = contact->GetFixtureB()->GetBody();
 
     PhysicsObject * objA = physObjForBody(bodyA);
     PhysicsObject * objB = physObjForBody(bodyB);
@@ -31,10 +35,20 @@ void BContactListener::BeginContact(b2Contact* contact)
     {
         [(id)objB enter:bodyA];
     }*/
+
+   physObj.call("begin_contact", enta, entb);
 }
 
 void BContactListener::EndContact(b2Contact* contact)
 {
+   b2Body * bodyA = contact->GetFixtureA()->GetBody();
+   b2Body * bodyB = contact->GetFixtureB()->GetBody();
+
+   int enta = (intptr_t)bodyA->GetUserData();
+   int entb = (intptr_t)bodyB->GetUserData();
+
+   physObj.call("end_contact", enta, entb);
+
    //[contactHandler handleEndContact:contact];
 
    /*
@@ -120,6 +134,8 @@ void BContactListener::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
       imp += fabs(impulse->normalImpulses[i]);
       //	NSLog(@"Normal impulse:%f Tangent Impulse:%f", impulse->normalImpulses[i], impulse->tangentImpulses[i]);
    }
+
+   physObj.call("post_collision", enta, entb, imp);
 
    //[contactHandler addCollisionBetweenEntA:enta entB:entb contactPoint:contactPoint impulse:imp];
 }

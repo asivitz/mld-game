@@ -14,3 +14,35 @@ class Platform
       key_map[code] = nil
    end
 end
+
+class Physics
+   def post_collision enta, entb, impulse
+      #p "collide #{enta} #{entb} #{impulse}"
+   end
+
+   def begin_contact enta, entb
+      obj1 = $body_map[enta]
+      obj2 = $body_map[entb]
+      obj1.begin_contact(obj2)
+      obj2.begin_contact(obj1)
+   end
+
+   def end_contact enta, entb
+      obj1 = $body_map[enta]
+      obj2 = $body_map[entb]
+      obj1.end_contact(obj2)
+      obj2.end_contact(obj1)
+   end
+end
+
+class WorldObj
+   def begin_contact other
+   end
+
+   def end_contact other
+   end
+
+   def jump_platform
+      false
+   end
+end

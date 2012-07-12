@@ -26,6 +26,7 @@ class Platform : public Rice::Director
    void setViewMatrix(Array a);
    bool isWindowOpen();
    int loadImage(string fileName);
+   void setPhysics(Physics * phys);
 };
 
 #endif

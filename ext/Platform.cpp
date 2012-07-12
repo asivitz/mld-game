@@ -21,7 +21,17 @@ Platform::Platform(Object self) : Rice::Director(self)
    window->setVerticalSyncEnabled(true);
 
    renderer = new Renderer();
-   physics = new Physics();
+}
+
+Platform::~Platform()
+{
+   delete renderer;
+   delete window;
+}
+
+void Platform::setPhysics(Physics * phys)
+{
+   physics = phys;
 
    ShaderProgram * program = makeProgram("shaders/Shader.vsh", "shaders/SolidColor.fsh");
    if (program)
@@ -30,12 +40,6 @@ Platform::Platform(Object self) : Rice::Director(self)
    }
    else
       cout << "Couldn't create shader" << endl;
-}
-
-Platform::~Platform()
-{
-   delete renderer;
-   delete window;
 }
 
 void Platform::draw()
@@ -155,11 +159,6 @@ void Platform::setViewMatrix(Array a)
    }
 }
 
-Object Platform::getPhysics()
-{
-   return Rice::Data_Object<Physics>(physics, Rice::Data_Type<Physics>::klass(), 0, 0);
-}
-
    extern "C"
 void Init_engine()
 {
@@ -168,17 +167,17 @@ void Init_engine()
       .define_constructor(Constructor<Platform, Rice::Object>())
       .define_method("addDrawCommand", &Platform::addDrawCommand)
       .define_method("setViewMatrix", &Platform::setViewMatrix)
+      .define_method("physics=", &Platform::setPhysics)
       .define_method("isWindowOpen", &Platform::isWindowOpen)
       .define_method("loadImage", &Platform::loadImage)
       //.define_method("addWall", &Platform::addWall)
       //.define_method("addGrenade", &Platform::addGrenade)
       .define_method("update", &Platform::update)
-      .define_method("physics", &Platform::getPhysics)
       .define_method("draw", &Platform::draw);
 
    Data_Type<Physics> rb_cPhysics =
       define_class<Physics>("Physics")
-      //.define_constructor(Constructor<Platform, Rice::Object>())
+      .define_constructor(Constructor<Physics, Rice::Object>())
       .define_method("addWall", &Physics::addWall)
       .define_method("addGrenade", &Physics::addGrenade)
       .define_method("addPlayer", &Physics::addPlayer)

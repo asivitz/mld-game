@@ -12,6 +12,7 @@
 #include "GLES-Render.h"
 #include "BContactListener.h"
 #include "rice/Class.hpp"
+#include "rice/Director.hpp"
 
 using namespace Rice;
 
@@ -31,18 +32,18 @@ vec2 midpoint(vec2 one, vec2 two);
 
 using namespace std;
 
-class Physics
+class Physics : public Rice::Director
 {
 private:
-   BContactListener * m_contactListener;
 
 public:
    b2Filter defaultFilter;
    GLESDebugDraw * m_debugDraw;
+   BContactListener * m_contactListener;
 
    b2World * boxworld;
 
-   Physics();
+   Physics(Object self);
    ~Physics();
    void initDebugDrawing();
    void debugDraw();

@@ -9,26 +9,39 @@ require_relative 'engine'
 # maps physics body ids to game objects
 $body_map = {}
 
-MAX_VEL = 5.0
-MOVE_IMP = 2.0
-JUMP_IMP = 20.0
-class Player
-   attr_accessor :pos, :move_imp
+MAX_VEL = 10.0
+MOVE_IMP = 4.0
+JUMP_IMP = 110.0
+class Player < WorldObj
    attr_reader :body
+   attr_accessor :num_standing_on_solid
 
    def initialize
-      @move_imp = vec2(0.0,0.0)
-
-      @texid = $platform.loadImage "images/triangle.png"
-      @body = $platform.physics.addPlayer([0,5], 2.0)
+      @texid = $platform.loadImage "2player\ shooter/images/redGuyLeft.png"
+      #@texid = $platform.loadImage "images/triangle.png"
+      @body = $physics.addPlayer([0,5], 2.0)
       $body_map[@body.id] = self
+      @num_standing_on_solid = 0
+      @jump_time = Time.now
+   end
+
+   def begin_contact other
+      if other.jump_platform
+         @num_standing_on_solid += 1
+      end
+   end
+
+   def end_contact other
+      if other.jump_platform
+         @num_standing_on_solid -= 1
+      end
    end
    
    def mat
       m = Matrix.identity(4)
       pos = @body.pos
       m = m.translate(pos.x,pos.y,0)
-      m = m.scale(4,4,1)
+      m = m.scale(2,4,1)
    end
 
    def draw
@@ -48,39 +61,75 @@ class Player
    end
 
    def jump
-      @body.push([0.0,JUMP_IMP])
+      if @num_standing_on_solid > 0 && (Time.now - @jump_time).to_f > 0.5
+         @body.push([0.0,JUMP_IMP])
+         @jump_time = Time.now
+      end
+   end
+
+   def jump_platform
+      true
+   end
+
+   def update time
+      vel = $one.body.vel
+      vel.x *= 1.0 - 1.0 * time
+      $one.body.vel = vel
    end
 end
 
 def process_input key_map
-   if key_map[71]
+   if key_map[71] # left arrow
       $one.move_left
-   elsif key_map[72]
+   elsif key_map[72] # right arrow
       $one.move_right
    end
 
-   if key_map[73]
+   if key_map[73] # up arrow
       $one.jump
    end
 
-   if key_map[16]
+   if key_map[16] # letter q
       $running = false
    end
 end
 
-$platform = Platform.new
-wall = $platform.physics.addWall([0,0],[10,1])
+class Floor < WorldObj
+   attr_reader :body
 
-$grenade = $platform.physics.addGrenade([0,10],1.0)
+   def initialize
+      #@texid = $platform.loadImage "2player\ shooter/images/redGuyLeft.png"
+      @body = $physics.addWall([0,0], [10.0, 1.0])
+      $body_map[@body.id] = self
+   end
+
+   def jump_platform
+      true # player can jump off of this
+   end
+end
+
+class Grenade < WorldObj
+   attr_reader :body
+
+   def initialize
+      #@texid = $platform.loadImage "2player\ shooter/images/redGuyLeft.png"
+      @body = $physics.addGrenade([0,10],1.0)
+      $body_map[@body.id] = self
+   end
+end
+
+$platform = Platform.new
+$physics = Physics.new
+$platform.physics = $physics
 
 $running = true
 $one = Player.new
+$floor = Floor.new
 
 view = Matrix.ortho(-15, 15, -15, 15, -30, 1)
 
 $platform.setViewMatrix(view.flatten)
 
-$phys = $platform.physics
 timeStep = 1/60.0
 lastTime = Time.now
 accumTime = 0.0
@@ -90,11 +139,14 @@ while $platform.isWindowOpen and $running
    lastTime = currentTime
 
    while accumTime >= timeStep
-      $phys.update(timeStep)
+      $physics.update(timeStep)
       accumTime -= timeStep
+
+      $one.update timeStep
    end
    $one.draw
    $platform.draw
 
    process_input $platform.key_map
+
 end

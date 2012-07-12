@@ -12,6 +12,14 @@ class Array
    def y
       self[1]
    end
+
+   def x= other
+      self[0] = other
+   end
+
+   def y= other
+      self[1] = other
+   end
 end
 
 class Matrix

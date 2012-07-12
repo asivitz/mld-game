@@ -75,12 +75,13 @@ Rice::Object makeBody(b2Body * b2body)
    return obj;
 }
 
-Physics::Physics()
+Physics::Physics(Object self) : Rice::Director(self)
 {
 
    vec2 gravity = vec2(0.0f, -20.0f);
    boxworld = new b2World(gravity);
    m_contactListener = new BContactListener();
+   m_contactListener->physObj = self;
    boxworld->SetContactListener(m_contactListener);
 
    defaultFilter.categoryBits = 0x0001;
@@ -133,11 +134,10 @@ Object Physics::addWall(vec2 pos, vec2 extens)
     fixtureDef.shape = &crateBox;
     fixtureDef.filter = defaultFilter;
 
-    //fixtureDef.density = 1.0f;
-    //fixtureDef.friction = 0.0f;
-    //fixtureDef.restitution = 0.8;
-    body->CreateFixture(&crateBox, 0.0);
-    //body->CreateFixture(&fixtureDef);
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.5f;
+    fixtureDef.restitution = 0.0;
+    body->CreateFixture(&fixtureDef);
 
     return makeBody(body);
 }
@@ -158,41 +158,6 @@ b2Body * Physics::addSensor(vec2 pos, vec2 extens)
 
     fixtureDef.filter = defaultFilter;
     body->CreateFixture(&fixtureDef);
-
-    return body;
-}
-
-//useful for testing visibility of a drawn but non-interactive object
-b2Body * Physics::addDummy(vec2 pos, vec2 extens)
-{
-    b2BodyDef bd;
-    bd.position.Set(pos.x,pos.y);
-    b2Body * body = boxworld->CreateBody(&bd);
-
-    b2PolygonShape shape;
-    shape.SetAsBox(extens.x, extens.y);
-
-    b2FixtureDef fixtureDef;
-
-    fixtureDef.shape = &shape;
-    fixtureDef.isSensor = true;
-
-    b2Filter filter;
-    filter.categoryBits = 0x0000;
-    filter.maskBits = 0x0000;
-    filter.groupIndex = 0;
-
-    fixtureDef.filter = filter;
-    body->CreateFixture(&fixtureDef);
-
-    return body;
-}
-
-b2Body * Physics::addEmptyBody(vec2 pos)
-{
-    b2BodyDef bd;
-    bd.position.Set(pos.x,pos.y);
-    b2Body * body = boxworld->CreateBody(&bd);
 
     return body;
 }
@@ -278,7 +243,7 @@ Object Physics::addPlayer(vec2 pos, float size)
     fixtureDef.filter = defaultFilter;
     fixtureDef.density = 1.0f;
     fixtureDef.friction = 0.3f;
-    fixtureDef.restitution = 0.3f;
+    fixtureDef.restitution = 0.0f;
     body->CreateFixture(&fixtureDef);
 
     return makeBody(body);
@@ -352,7 +317,7 @@ void Physics::tick(double time)
 
 Physics::~Physics()
 {
-    //delete m_contactListener;
+    delete m_contactListener;
     delete boxworld;
     delete m_debugDraw;
 }
