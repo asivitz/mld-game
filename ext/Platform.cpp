@@ -66,6 +66,7 @@ void Platform::draw()
    }
 
    lightMap->setActive(true);
+   glViewport(0, 0, 600, 600);
    renderer->drawLights();
    lightMap->display();
 
@@ -74,6 +75,7 @@ void Platform::draw()
 
    bool draw_debug = true;
    window->setActive(true);
+   glViewport(0, 0, 600, 600);
    renderer->draw();
 
    const float lightModel[]= 
