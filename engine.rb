@@ -8,6 +8,14 @@ class Platform
 
    def key_pressed code
       key_map[code] = true
+
+      if code == 73 # up arrow
+         $one.jump
+      elsif code == 57
+         $one.fire
+      elsif code == 16 # letter q
+         $running = false
+      end
    end
 
    def key_released code
@@ -42,7 +50,7 @@ class WorldObj
    def end_contact other
    end
 
-   def jump_platform
+   def is_jump_platform
       false
    end
 end

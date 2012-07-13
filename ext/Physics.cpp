@@ -238,7 +238,7 @@ Object Physics::addGrenade(vec2 pos, float size)
 
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(pos.x, pos.y);
-    //bodyDef.fixedRotation = true;
+    bodyDef.fixedRotation = true;
     //bodyDef.bullet = true;
 
     b2Body* body = boxworld->CreateBody(&bodyDef);

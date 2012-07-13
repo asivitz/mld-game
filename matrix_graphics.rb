@@ -1,10 +1,10 @@
 require 'matrix'
 
-def vec2(x,y)
-   Matrix.column_vector([x,y])
+def vec(x,y)
+   Vector.elements([x,y])
 end
 
-class Array
+class Vector
    def x
       self[0]
    end
@@ -19,6 +19,28 @@ class Array
 
    def y= other
       self[1] = other
+   end
+
+   def normalize
+      return self / self.r
+   end
+end
+
+class Array
+   def x
+      self[0]
+   end
+
+   def x=(val)
+      self[0] = val
+   end
+   
+   def y
+      self[1]
+   end
+
+   def y=(val)
+      self[1] = val
    end
 end
 

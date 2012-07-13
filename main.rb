@@ -11,7 +11,7 @@ $body_map = {}
 
 MAX_VEL = 10.0
 MOVE_IMP = 4.0
-JUMP_IMP = 110.0
+JUMP_IMP = 140.0
 class Player < WorldObj
    attr_reader :body
    attr_accessor :num_standing_on_solid
@@ -23,16 +23,18 @@ class Player < WorldObj
       $body_map[@body.id] = self
       @num_standing_on_solid = 0
       @jump_time = Time.now
+      @fire_time = Time.now
+      @last_faced_direction = 1
    end
 
    def begin_contact other
-      if other.jump_platform
+      if other.is_jump_platform
          @num_standing_on_solid += 1
       end
    end
 
    def end_contact other
-      if other.jump_platform
+      if other.is_jump_platform
          @num_standing_on_solid -= 1
       end
    end
@@ -40,8 +42,8 @@ class Player < WorldObj
    def mat
       m = Matrix.identity(4)
       pos = @body.pos
-      m = m.translate(pos.x,pos.y,0)
-      m = m.scale(2,4,1)
+      m = m.translate(pos[0],pos[1],0)
+      m = m.scale(-2 * @last_faced_direction,4,1)
    end
 
    def draw
@@ -49,12 +51,14 @@ class Player < WorldObj
    end
 
    def move_right
+      @last_faced_direction = 1
       if @body.vel.x < MAX_VEL
          @body.push([MOVE_IMP,0.0])
       end
    end
 
    def move_left
+      @last_faced_direction = -1
       if @body.vel.x > -MAX_VEL
          @body.push([-MOVE_IMP,0.0])
       end
@@ -67,7 +71,7 @@ class Player < WorldObj
       end
    end
 
-   def jump_platform
+   def is_jump_platform
       true
    end
 
@@ -78,6 +82,19 @@ class Player < WorldObj
       vel.x *= 1.0 - 1.0 * time #* factor
       $one.body.vel = vel
    end
+
+   def fire
+      if (Time.now - @fire_time).to_f > 0.1
+         pos = vec(*@body.pos)
+         dir = vec(@last_faced_direction, 0.4).normalize
+         pos += dir
+         gren = Grenade.new pos.to_a
+         dir *= 100
+         gren.body.push dir.to_a
+
+         @fire_time = Time.now
+      end
+   end
 end
 
 def process_input key_map
@@ -85,14 +102,6 @@ def process_input key_map
       $one.move_left
    elsif key_map[72] # right arrow
       $one.move_right
-   end
-
-   if key_map[73] # up arrow
-      $one.jump
-   end
-
-   if key_map[16] # letter q
-      $running = false
    end
 end
 
@@ -105,7 +114,7 @@ class Floor < WorldObj
       $body_map[@body.id] = self
    end
 
-   def jump_platform
+   def is_jump_platform
       true # player can jump off of this
    end
 end
@@ -129,7 +138,7 @@ class Boundary < WorldObj
       $body_map[@body.id] = self
    end
 
-   def jump_platform
+   def is_jump_platform
       true # player can jump off of this
    end
 end

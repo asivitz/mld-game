@@ -19,6 +19,7 @@ Platform::Platform(Object self) : Rice::Director(self)
 {
    window = new sf::Window(sf::VideoMode(600, 600), "OpenGL");
    window->setVerticalSyncEnabled(true);
+   window->setKeyRepeatEnabled(false);
 
    renderer = new Renderer();
 }
