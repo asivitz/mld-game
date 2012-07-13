@@ -124,8 +124,8 @@ void Renderer::draw()
 
 void Renderer::drawLights()
 {
-   glClearColor(0.4f, 0.4f, 0.4f, 1.0f);
-   glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
+   glClearColor(0.2f, 0.2f, 0.2f, 0.2f);
+   glClear( GL_COLOR_BUFFER_BIT );
 
    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);

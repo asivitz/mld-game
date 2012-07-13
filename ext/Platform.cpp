@@ -24,7 +24,7 @@ Platform::Platform(Object self) : Rice::Director(self)
    renderer = new Renderer();
 
    lightMap = new sf::RenderTexture();
-   if (!lightMap->create(600, 600))
+   if (!lightMap->create(600, 600, false))
       cout << "ERROR: Couldn't create lightMap" << endl;
 }
 
@@ -69,6 +69,8 @@ void Platform::draw()
    renderer->drawLights();
    lightMap->display();
 
+   //lightMap->getTexture().copyToImage().saveToFile("out.png");
+
 
    bool draw_debug = true;
    window->setActive(true);
@@ -86,9 +88,9 @@ void Platform::draw()
       ShaderProgram * prog = renderer->program;
       glEnable(GL_BLEND);
       lightMap->getTexture().bind();
-      glUniform1i(prog->locationOfTex(), 1);
-      glUniform4f(prog->locationOfUniform("color"), 1.0, 1.0, 1.0, 1.0);
-      glUniformMatrix4fv(prog->locationOfUniform("viewMat"), 1, GL_FALSE, renderer->viewMatrix);
+      glUniform1i(prog->locationOfTex(), 0);
+      //glUniform4f(prog->locationOfUniform("color"), 1.0, 1.0, 1.0, 1.0);
+      //glUniformMatrix4fv(prog->locationOfUniform("viewMat"), 1, GL_FALSE, renderer->viewMatrix);
       glUniformMatrix4fv(prog->locationOfModelMat(), 1, GL_FALSE, lightModel);
       glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_SHORT, 0);
       glDisable(GL_BLEND);
