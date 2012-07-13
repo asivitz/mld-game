@@ -8,6 +8,7 @@ require_relative 'engine'
 
 # maps physics body ids to game objects
 $body_map = {}
+$drawables = []
 
 MAX_VEL = 10.0
 MOVE_IMP = 4.0
@@ -89,6 +90,7 @@ class Player < WorldObj
          dir = vec(@last_faced_direction, 0.4).normalize
          pos += dir
          gren = Grenade.new pos.to_a
+         $drawables << gren
          dir *= 100
          gren.body.push dir.to_a
 
@@ -123,9 +125,20 @@ class Grenade < WorldObj
    attr_reader :body
 
    def initialize pos
-      #@texid = $platform.loadImage "2player\ shooter/images/redGuyLeft.png"
+      @texid = $platform.loadImage "images/light.png"
       @body = $physics.addGrenade(pos,1.0)
       $body_map[@body.id] = self
+   end
+
+   def mat
+      m = Matrix.identity(4)
+      pos = @body.pos
+      m = m.translate(pos[0],pos[1],0)
+      m = m.scale(18,18,1)
+   end
+
+   def draw
+      $platform.addLightCommand(@texid, self.mat.flatten)
    end
 end
 
@@ -172,6 +185,7 @@ while $platform.isWindowOpen and $running
    end
    $one.draw
    $platform.draw
+   $drawables.each { |d| d.draw }
 
    process_input $platform.key_map
 

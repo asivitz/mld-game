@@ -16,21 +16,24 @@ struct DrawCommand
 
 class Renderer
 {
-   queue<DrawCommand *> commands;
-   ShaderProgram * program;
+   queue<DrawCommand *> drawCommands;
+   queue<DrawCommand *> lightCommands;
 
    GLuint    vertexBuffer;
    GLuint    indexBuffer;
    GLuint    texCoordBuffer;
 
    public:
+   ShaderProgram * program;
    Renderer();
    ~Renderer();
    void addCommand(DrawCommand * command);
-   void executeCommands();
+   void addLightCommand(DrawCommand * command);
+   void executeCommands(queue<DrawCommand *> * commands);
    void setupSquareDrawing();
    void commitViewMatrix();
    void draw();
+   void drawLights();
 
    float viewMatrix[16];
 };

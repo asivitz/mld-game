@@ -22,6 +22,10 @@ Platform::Platform(Object self) : Rice::Director(self)
    window->setKeyRepeatEnabled(false);
 
    renderer = new Renderer();
+
+   lightMap = new sf::RenderTexture();
+   if (!lightMap->create(600, 600))
+      cout << "ERROR: Couldn't create lightMap" << endl;
 }
 
 Platform::~Platform()
@@ -61,8 +65,35 @@ void Platform::draw()
       }
    }
 
+   lightMap->setActive(true);
+   renderer->drawLights();
+   lightMap->display();
+
+
    bool draw_debug = true;
+   window->setActive(true);
    renderer->draw();
+
+   const float lightModel[]= 
+   {60, 0, 0, 0, 
+      0, 60, 0, 0, 
+      0, 0, 1, 0,
+      0, 0, 0, 1};
+   //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   glBlendFunc(GL_DST_COLOR, GL_ZERO);
+   
+   {
+      ShaderProgram * prog = renderer->program;
+      glEnable(GL_BLEND);
+      lightMap->getTexture().bind();
+      glUniform1i(prog->locationOfTex(), 1);
+      glUniform4f(prog->locationOfUniform("color"), 1.0, 1.0, 1.0, 1.0);
+      glUniformMatrix4fv(prog->locationOfUniform("viewMat"), 1, GL_FALSE, renderer->viewMatrix);
+      glUniformMatrix4fv(prog->locationOfModelMat(), 1, GL_FALSE, lightModel);
+      glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_SHORT, 0);
+      glDisable(GL_BLEND);
+   }
+
    if (draw_debug)
    {
       ShaderProgram * prog = physics->m_debugDraw->shaderProgram;
@@ -100,6 +131,21 @@ void Platform::addDrawCommand(int texid, Array a)
       }
       command->texId = texid;
       renderer->addCommand(command);
+   }
+}
+
+void Platform::addLightCommand(int texid, Array a)
+{
+   if (a.size() == 16)
+   {
+      DrawCommand * command = new DrawCommand();
+      VALUE * carr = a.to_c_array();
+      for (int i = 0; i < 16; i++)
+      {
+         command->m[i] = (float)NUM2DBL(carr[i]);
+      }
+      command->texId = texid;
+      renderer->addLightCommand(command);
    }
 }
 
@@ -167,6 +213,7 @@ void Init_engine()
       define_class<Platform>("Platform")
       .define_constructor(Constructor<Platform, Rice::Object>())
       .define_method("addDrawCommand", &Platform::addDrawCommand)
+      .define_method("addLightCommand", &Platform::addLightCommand)
       .define_method("setViewMatrix", &Platform::setViewMatrix)
       .define_method("physics=", &Platform::setPhysics)
       .define_method("isWindowOpen", &Platform::isWindowOpen)

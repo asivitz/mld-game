@@ -6,6 +6,9 @@
 #include "rice/Array.hpp"
 #include "rice/Director.hpp"
 #include <SFML/Window.hpp>
+//#include <SFML/RenderTexture.hpp>
+#include <SFML/Graphics.hpp>
+
 
 using namespace Rice;
 
@@ -15,6 +18,7 @@ class Platform : public Rice::Director
    Physics * physics;
 
    sf::Window * window;
+   sf::RenderTexture * lightMap;
 
    public:
    Platform(Object self);
@@ -23,6 +27,7 @@ class Platform : public Rice::Director
    void draw();
    Object getPhysics();
    void addDrawCommand(int texid, Array a);
+   void addLightCommand(int texid, Array a);
    void setViewMatrix(Array a);
    bool isWindowOpen();
    int loadImage(string fileName);
