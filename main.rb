@@ -9,6 +9,16 @@ require_relative 'engine'
 # maps physics body ids to game objects
 $body_map = {}
 $drawables = []
+$tex_map = {}
+
+def load_image name
+   texid = $tex_map[name]
+   if not texid
+      texid = $platform.loadImage name
+      $tex_map[name] = texid
+   end
+   texid
+end
 
 MAX_VEL = 10.0
 MOVE_IMP = 4.0
@@ -18,7 +28,7 @@ class Player < WorldObj
    attr_accessor :num_standing_on_solid
 
    def initialize pos
-      @texid = $platform.loadImage "2player\ shooter/images/redGuyLeft.png"
+      @texid = load_image "2player\ shooter/images/redGuyLeft.png"
       #@texid = $platform.loadImage "images/triangle.png"
       @body = $physics.addPlayer(pos, 2.0)
       $body_map[@body.id] = self
@@ -125,20 +135,20 @@ class Grenade < WorldObj
    attr_reader :body
 
    def initialize pos
-      @texid = $platform.loadImage "images/light.png"
+      @texid = load_image "images/triangle.png"
+      @light_texid = load_image "images/light.png"
       @body = $physics.addGrenade(pos,1.0)
       $body_map[@body.id] = self
    end
 
-   def mat
+   def draw
       m = Matrix.identity(4)
       pos = @body.pos
       m = m.translate(pos[0],pos[1],0)
-      m = m.scale(18,18,1)
-   end
-
-   def draw
-      $platform.addLightCommand(@texid, self.mat.flatten)
+      mat = m.scale(3,3,1)
+      $platform.addDrawCommand(@texid, mat.flatten)
+      light_mat = m.scale(25,25,1)
+      $platform.addLightCommand(@light_texid, light_mat.flatten)
    end
 end
 

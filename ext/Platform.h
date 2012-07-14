@@ -18,7 +18,9 @@ class Platform : public Rice::Director
    Physics * physics;
 
    sf::Window * window;
-   sf::RenderTexture * lightMap;
+
+   GLuint lightFramebuffer;
+   GLuint lightImage;
 
    public:
    Platform(Object self);
@@ -32,6 +34,8 @@ class Platform : public Rice::Director
    bool isWindowOpen();
    int loadImage(string fileName);
    void setPhysics(Physics * phys);
+   void switchToLightFramebuffer();
+   void createLightFramebuffer();
 };
 
 #endif

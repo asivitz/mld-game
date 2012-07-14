@@ -15,6 +15,25 @@
 using namespace Rice;
 using namespace std;
 
+void checkGLError()
+{
+   for (int e = glGetError(); e != GL_NO_ERROR; e = glGetError())
+   {
+      cout << "******************GLERROR****************";
+      switch (e)
+      {
+         case GL_INVALID_ENUM:   cout << "OpenGL: Invalid enum" << endl; break;
+         case GL_INVALID_VALUE:  cout << "OpenGL: Invalid value" << endl; break;
+         case GL_INVALID_OPERATION:      cout << "OpenGL: Invalid operation" << endl; break;
+         case GL_STACK_OVERFLOW:         cout << "OpenGL: Stack overflow" << endl; break;
+         case GL_STACK_UNDERFLOW:        cout << "OpenGL: Stack underflow" << endl; break;
+         case GL_OUT_OF_MEMORY:  cout << "OpenGL: Out of memory" << endl; break;
+         default: cout << "OpenGL: Unknown Error" << endl;
+      }
+   }
+}
+
+
 Platform::Platform(Object self) : Rice::Director(self)
 {
    window = new sf::Window(sf::VideoMode(600, 600), "OpenGL");
@@ -23,9 +42,8 @@ Platform::Platform(Object self) : Rice::Director(self)
 
    renderer = new Renderer();
 
-   lightMap = new sf::RenderTexture();
-   if (!lightMap->create(600, 600, false))
-      cout << "ERROR: Couldn't create lightMap" << endl;
+   lightFramebuffer = lightImage = 0;
+   createLightFramebuffer();
 }
 
 Platform::~Platform()
@@ -47,6 +65,43 @@ void Platform::setPhysics(Physics * phys)
       cout << "Couldn't create shader" << endl;
 }
 
+const int lightWidth = 600;
+const int lightHeight = 600;
+
+void Platform::createLightFramebuffer()
+{
+   if (!lightFramebuffer)
+   {
+      //        [EAGLContext setCurrentContext:context];
+
+      // Create default framebuffer object.
+      glGenFramebuffers(1, &lightFramebuffer);
+      glBindFramebuffer(GL_FRAMEBUFFER, lightFramebuffer);
+
+      glGenTextures(1, &lightImage);
+      glBindTexture(GL_TEXTURE_2D, lightImage);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, lightWidth, lightHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, lightImage, 0);
+
+      if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+         cout << "Failed to make complete framebuffer object " << glCheckFramebufferStatus(GL_FRAMEBUFFER) << endl;
+
+      checkGLError();
+      glBindFramebuffer(GL_FRAMEBUFFER, 0);
+   }
+}
+
+void Platform::switchToLightFramebuffer()
+{
+   glBindFramebuffer(GL_FRAMEBUFFER, lightFramebuffer);
+   glViewport(0, 0, lightWidth, lightHeight);
+}
+
 void Platform::draw()
 {
    sf::Event event;
@@ -65,22 +120,23 @@ void Platform::draw()
       }
    }
 
-   lightMap->setActive(true);
+   switchToLightFramebuffer();
    glViewport(0, 0, 600, 600);
    renderer->drawLights();
-   lightMap->display();
+   glBindFramebuffer(GL_FRAMEBUFFER,0);
+   //lightMap->display();
 
    //lightMap->getTexture().copyToImage().saveToFile("out.png");
 
 
-   bool draw_debug = true;
+   bool draw_debug = false;
    window->setActive(true);
    glViewport(0, 0, 600, 600);
    renderer->draw();
 
    const float lightModel[]= 
    {60, 0, 0, 0, 
-      0, 60, 0, 0, 
+      0, -60, 0, 0, 
       0, 0, 1, 0,
       0, 0, 0, 1};
    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -89,7 +145,7 @@ void Platform::draw()
    {
       ShaderProgram * prog = renderer->program;
       glEnable(GL_BLEND);
-      lightMap->getTexture().bind();
+      glBindTexture(GL_TEXTURE_2D, lightImage);
       glUniform1i(prog->locationOfTex(), 0);
       //glUniform4f(prog->locationOfUniform("color"), 1.0, 1.0, 1.0, 1.0);
       //glUniformMatrix4fv(prog->locationOfUniform("viewMat"), 1, GL_FALSE, renderer->viewMatrix);
@@ -150,24 +206,6 @@ void Platform::addLightCommand(int texid, Array a)
       }
       command->texId = texid;
       renderer->addLightCommand(command);
-   }
-}
-
-void checkGLError()
-{
-   for (int e = glGetError(); e != GL_NO_ERROR; e = glGetError())
-   {
-      cout << "******************GLERROR****************";
-      switch (e)
-      {
-         case GL_INVALID_ENUM:   cout << "OpenGL: Invalid enum" << endl; break;
-         case GL_INVALID_VALUE:  cout << "OpenGL: Invalid value" << endl; break;
-         case GL_INVALID_OPERATION:      cout << "OpenGL: Invalid operation" << endl; break;
-         case GL_STACK_OVERFLOW:         cout << "OpenGL: Stack overflow" << endl; break;
-         case GL_STACK_UNDERFLOW:        cout << "OpenGL: Stack underflow" << endl; break;
-         case GL_OUT_OF_MEMORY:  cout << "OpenGL: Out of memory" << endl; break;
-         default: cout << "OpenGL: Unknown Error" << endl;
-      }
    }
 }
 
