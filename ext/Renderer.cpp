@@ -33,6 +33,24 @@ const GLshort boxTextureCoords[] = {
     1, 0,
 };
 
+void checkGLError()
+{
+   for (int e = glGetError(); e != GL_NO_ERROR; e = glGetError())
+   {
+      cout << "******************GLERROR****************";
+      switch (e)
+      {
+         case GL_INVALID_ENUM:   cout << "OpenGL: Invalid enum" << endl; break;
+         case GL_INVALID_VALUE:  cout << "OpenGL: Invalid value" << endl; break;
+         case GL_INVALID_OPERATION:      cout << "OpenGL: Invalid operation" << endl; break;
+         case GL_STACK_OVERFLOW:         cout << "OpenGL: Stack overflow" << endl; break;
+         case GL_STACK_UNDERFLOW:        cout << "OpenGL: Stack underflow" << endl; break;
+         case GL_OUT_OF_MEMORY:  cout << "OpenGL: Out of memory" << endl; break;
+         default: cout << "OpenGL: Unknown Error" << endl;
+      }
+   }
+}
+
 
 void Renderer::setupSquareDrawing()
 {
@@ -93,10 +111,20 @@ void Renderer::executeCommands(queue<DrawCommand *> * commands)
       DrawCommand * command = commands->front();
 
       glUniformMatrix4fv(program->locationOfModelMat(), 1, GL_FALSE, command->m);
+
+      cout << "loc loc:" << program->locationOfUniform("loc") << endl;
+      cout << "command:" << command << " loc x:" << command->texLoc[0] << " loc y:" << command->texLoc[1] << " w:" << command->texSize[0] << " h:" << command->texSize[1] << endl;
+      cout << "sizeof x:" << sizeof(command->texLoc[0]) << endl;
+      glUniform2fv(program->locationOfUniform("loc"), 1, command->texLoc);
+      glUniform2fv(program->locationOfUniform("size"), 1, command->texSize);
+
       glBindTexture(GL_TEXTURE_2D, command->texId);
       glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_SHORT, 0);
       delete command;
       commands->pop();
+
+
+      checkGLError();
    }
 }
 
@@ -115,6 +143,7 @@ void Renderer::draw()
    glVertexAttribPointer(program->indexForAttribute("position"), 2, GL_FLOAT, 0, 0, 0);
    glEnableVertexAttribArray(program->indexForAttribute("position"));
    
+   cout << "Draw" << endl;
 
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
    glEnable(GL_BLEND);
@@ -132,11 +161,12 @@ void Renderer::drawLights()
 
    program->setAsActive();
    glUniformMatrix4fv(program->locationOfUniform("viewMat"), 1, GL_FALSE, viewMatrix);
-   glUniform4f(program->locationOfUniform("color"), 1.0, 1.0, 1.0, 1.0);
+   glUniform4f(program->locationOfUniform("color"), 1.0, 0.0, 1.0, 1.0);
 
    glVertexAttribPointer(program->indexForAttribute("position"), 2, GL_FLOAT, 0, 0, 0);
    glEnableVertexAttribArray(program->indexForAttribute("position"));
    
+   cout << "Draw lights" << endl;
 
    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
    glBlendFunc(GL_ONE, GL_ONE);

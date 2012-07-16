@@ -30,6 +30,7 @@ class Platform : public Rice::Director
    Object getPhysics();
    void addDrawCommand(int texid, Array a);
    void addLightCommand(int texid, Array a);
+   void addSpriteDrawCommand(int texid, Array a, Array texTransform);
    void setViewMatrix(Array a);
    bool isWindowOpen();
    int loadImage(string fileName);

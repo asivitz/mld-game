@@ -12,10 +12,13 @@ attribute vec2 texCoords;
 uniform mat4 modelMat;
 uniform mat4 viewMat;
 
+uniform vec2 loc;
+uniform vec2 size;
+
 varying vec2 texCoordsVarying;
 
 void main()
 {
     gl_Position = viewMat * modelMat * position;
-    texCoordsVarying = texCoords;
+    texCoordsVarying = (texCoords * size) + loc;
 }

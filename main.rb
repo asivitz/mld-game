@@ -5,20 +5,11 @@
 require_relative 'ext/engine'
 require_relative 'matrix_graphics'
 require_relative 'engine'
+require_relative 'sprites'
 
 # maps physics body ids to game objects
 $body_map = {}
 $drawables = []
-$tex_map = {}
-
-def load_image name
-   texid = $tex_map[name]
-   if not texid
-      texid = $platform.loadImage name
-      $tex_map[name] = texid
-   end
-   texid
-end
 
 MAX_VEL = 10.0
 MOVE_IMP = 4.0
@@ -28,8 +19,7 @@ class Player < WorldObj
    attr_accessor :num_standing_on_solid
 
    def initialize pos
-      @texid = load_image "2player\ shooter/images/redGuyLeft.png"
-      #@texid = $platform.loadImage "images/triangle.png"
+      @sprite = SpriteSheet.new "red_anims"
       @body = $physics.addPlayer(pos, 2.0)
       $body_map[@body.id] = self
       @num_standing_on_solid = 0
@@ -58,7 +48,15 @@ class Player < WorldObj
    end
 
    def draw
-      $platform.addDrawCommand(@texid, self.mat.flatten)
+      info = @sprite.info "red-throw0011"
+      if rand(6) > 4
+         $platform.addSpriteDrawCommand(@sprite.texid, self.mat.flatten, info)
+         #$platform.addSpriteDrawCommand(@sprite.texid, self.mat.flatten, [0.1, 0.0, 1.0, 1.0])
+      else
+         $platform.addDrawCommand(@sprite.texid, self.mat.flatten)
+      end
+      #$platform.addSpriteDrawCommand(@sprite.texid, self.mat.flatten, info)
+      #$platform.addDrawCommand(@sprite.texid, self.mat.flatten)
    end
 
    def move_right

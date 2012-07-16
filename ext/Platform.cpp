@@ -15,25 +15,6 @@
 using namespace Rice;
 using namespace std;
 
-void checkGLError()
-{
-   for (int e = glGetError(); e != GL_NO_ERROR; e = glGetError())
-   {
-      cout << "******************GLERROR****************";
-      switch (e)
-      {
-         case GL_INVALID_ENUM:   cout << "OpenGL: Invalid enum" << endl; break;
-         case GL_INVALID_VALUE:  cout << "OpenGL: Invalid value" << endl; break;
-         case GL_INVALID_OPERATION:      cout << "OpenGL: Invalid operation" << endl; break;
-         case GL_STACK_OVERFLOW:         cout << "OpenGL: Stack overflow" << endl; break;
-         case GL_STACK_UNDERFLOW:        cout << "OpenGL: Stack underflow" << endl; break;
-         case GL_OUT_OF_MEMORY:  cout << "OpenGL: Out of memory" << endl; break;
-         default: cout << "OpenGL: Unknown Error" << endl;
-      }
-   }
-}
-
-
 Platform::Platform(Object self) : Rice::Director(self)
 {
    window = new sf::Window(sf::VideoMode(600, 600), "OpenGL");
@@ -130,7 +111,6 @@ void Platform::draw()
 
 
    bool draw_debug = false;
-   window->setActive(true);
    glViewport(0, 0, 600, 600);
    renderer->draw();
 
@@ -190,6 +170,44 @@ void Platform::addDrawCommand(int texid, Array a)
          command->m[i] = (float)NUM2DBL(carr[i]);
       }
       command->texId = texid;
+
+      command->texLoc[0] = 0;
+      command->texLoc[1] = 0;
+      command->texSize[0] = 1;
+      command->texSize[1] = 1;
+
+      renderer->addCommand(command);
+   }
+}
+
+void Platform::addSpriteDrawCommand(int texid, Array a, Array texTransform)
+{
+   if (a.size() == 16)
+   {
+      DrawCommand * command = new DrawCommand();
+      VALUE * carr = a.to_c_array();
+      for (int i = 0; i < 16; i++)
+      {
+         command->m[i] = (float)NUM2DBL(carr[i]);
+      }
+      command->texId = texid;
+
+      if (texTransform.size() == 4)
+      {
+         VALUE * texVals = texTransform.to_c_array();
+         //cout << "s " << sizeof(command->texLoc[0]) << "and " << sizeof((float)NUM2DBL(texVals[0])) << endl;
+         command->texLoc[0] = (float)NUM2DBL(texVals[0]);
+         command->texLoc[1] = (float)NUM2DBL(texVals[1]);
+         command->texSize[0] = (float)NUM2DBL(texVals[2]);
+         command->texSize[1] = (float)NUM2DBL(texVals[3]);
+         cout << "s " << command->texLoc[0] << " and " << command->texSize[1] << endl;
+
+      //command->texLoc[0] = 0.0;
+      //command->texLoc[1] = 0.0;
+      //command->texSize[0] = 1.0;
+      //command->texSize[1] = 1.0;
+      }
+
       renderer->addCommand(command);
    }
 }
@@ -205,6 +223,12 @@ void Platform::addLightCommand(int texid, Array a)
          command->m[i] = (float)NUM2DBL(carr[i]);
       }
       command->texId = texid;
+
+      command->texLoc[0] = 0.0;
+      command->texLoc[1] = 0.0;
+      command->texSize[0] = 1.0;
+      command->texSize[1] = 1.0;
+
       renderer->addLightCommand(command);
    }
 }
@@ -255,6 +279,7 @@ void Init_engine()
       define_class<Platform>("Platform")
       .define_constructor(Constructor<Platform, Rice::Object>())
       .define_method("addDrawCommand", &Platform::addDrawCommand)
+      .define_method("addSpriteDrawCommand", &Platform::addSpriteDrawCommand)
       .define_method("addLightCommand", &Platform::addLightCommand)
       .define_method("setViewMatrix", &Platform::setViewMatrix)
       .define_method("physics=", &Platform::setPhysics)

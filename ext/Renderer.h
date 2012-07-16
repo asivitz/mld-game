@@ -12,6 +12,8 @@ struct DrawCommand
 {
    float m[16];
    GLuint texId;
+   float texLoc[2];
+   float texSize[2];
 };
 
 class Renderer
@@ -37,5 +39,7 @@ class Renderer
 
    float viewMatrix[16];
 };
+
+void checkGLError();
 
 #endif
