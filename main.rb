@@ -58,16 +58,27 @@ class Player < WorldObj
       w = frame.w
       h = frame.h
 
+      m = m.translate(-0.4,-1.9,1)
+      m = m.scale(0.08,0.08,1)
 
       if frame.rotated
          w = frame.h
          h = frame.w
          m = m.rotate(-Math::PI/2.0)
+
+         m = m.translate(w/2.0,0,0)
+         m = m.scale(w, h, 1)
+      else
+         m = m.translate(0,h/2.0,0)
+         m = m.scale(w, h, 1)
       end
 
-      m = m.scale(w/64.0, h/64.0, 1)
-      m = m.scale(25,25,1)
-      m = m.translate(0,0.5,0)
+      #m = m.translate(0,0.5,0)
+      #m = m.translate(0,h/28.0,0)
+     
+      
+      
+      
       #$platform.addSpriteDrawCommand(@sprite.texid, self.mat.flatten, [0.0,0.0,0.1,0.1])
       $platform.addSpriteDrawCommand(@sprite.texid, m.flatten, [frame.x/@sprite.size[0], frame.y/@sprite.size[1], w/@sprite.size[0], h/@sprite.size[1]])
    end
