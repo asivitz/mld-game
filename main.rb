@@ -26,6 +26,7 @@ class Player < WorldObj
       @jump_time = Time.now
       @fire_time = Time.now
       @last_faced_direction = 1
+      @animation_time = Time.now
    end
 
    def begin_contact other
@@ -45,14 +46,19 @@ class Player < WorldObj
       pos = @body.pos
       m = m.translate(pos[0],pos[1],0)
       m = m.scale(-1 * @last_faced_direction,1,1)
-      m = m.scale(50,50,1)
    end
 
    def draw
       m = self.mat
-      frame = @sprite.frame "red-idle0003"
+
+      delta = (Time.now - @animation_time).to_f / 2.0
+      time = delta - delta.to_i
+      frame = @sprite.timed_frame("red-idle", time)
+
       w = frame.w
       h = frame.h
+
+
       if frame.rotated
          w = frame.h
          h = frame.w
@@ -60,6 +66,8 @@ class Player < WorldObj
       end
 
       m = m.scale(w/64.0, h/64.0, 1)
+      m = m.scale(25,25,1)
+      m = m.translate(0,0.5,0)
       #$platform.addSpriteDrawCommand(@sprite.texid, self.mat.flatten, [0.0,0.0,0.1,0.1])
       $platform.addSpriteDrawCommand(@sprite.texid, m.flatten, [frame.x/@sprite.size[0], frame.y/@sprite.size[1], w/@sprite.size[0], h/@sprite.size[1]])
    end

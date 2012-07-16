@@ -107,7 +107,7 @@ void Platform::draw()
    glBindFramebuffer(GL_FRAMEBUFFER,0);
 
 
-   bool draw_debug = false;
+   bool draw_debug = true;
    glViewport(0, 0, 600, 600);
    renderer->draw();
 
@@ -142,6 +142,8 @@ void Platform::draw()
          0,0,0,1};
       glUniformMatrix4fv(prog->locationOfUniform("viewMat"), 1, GL_FALSE, renderer->viewMatrix);
       glUniformMatrix4fv(prog->locationOfUniform("modelMat"), 1, GL_FALSE, model);
+      glUniform2f(prog->locationOfUniform("loc"), 0.0, 0.0);
+      glUniform2f(prog->locationOfUniform("size"), 1.0, 1.0);
       physics->debugDraw();
    }
    window->display();

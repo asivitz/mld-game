@@ -26,6 +26,24 @@ class SpriteSheet
       @size = [info["size"]["w"], info["size"]["h"]]
 
       @frames = {}
+
+      @anim_counts = {}
+
+      @metadata["frames"].keys.each do |key|
+         data = /(.*)(\d{4})/.match(key)
+         name = data[1]
+         prev = @anim_counts[name]
+         prev = 0 if prev.nil?
+         @anim_counts[name] = [prev, data[2].to_i].max
+      end
+      p @anim_counts
+   end
+
+   def timed_frame(name, fraction)
+      count = @anim_counts[name]
+      idx = (fraction * count).floor + 1
+      key = name + "%04d" % idx
+      self.frame key
    end
 
    def frame name
