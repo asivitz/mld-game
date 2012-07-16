@@ -26,7 +26,9 @@ class Player < WorldObj
       @jump_time = Time.now
       @fire_time = Time.now
       @last_faced_direction = 1
-      @animation_time = Time.now
+      @animation_start = Time.now
+      @animation_time = 0
+      @current_animation = "red-idle"
    end
 
    def begin_contact other
@@ -51,9 +53,7 @@ class Player < WorldObj
    def draw
       m = self.mat
 
-      delta = (Time.now - @animation_time).to_f / 2.0
-      time = delta - delta.to_i
-      frame = @sprite.timed_frame("red-idle", time)
+      frame = @sprite.timed_frame(@current_animation, (@animation_time - @animation_time.to_i))
 
       w = frame.w
       h = frame.h
@@ -73,13 +73,6 @@ class Player < WorldObj
          m = m.scale(w, h, 1)
       end
 
-      #m = m.translate(0,0.5,0)
-      #m = m.translate(0,h/28.0,0)
-     
-      
-      
-      
-      #$platform.addSpriteDrawCommand(@sprite.texid, self.mat.flatten, [0.0,0.0,0.1,0.1])
       $platform.addSpriteDrawCommand(@sprite.texid, m.flatten, [frame.x/@sprite.size[0], frame.y/@sprite.size[1], w/@sprite.size[0], h/@sprite.size[1]])
    end
 
@@ -99,6 +92,7 @@ class Player < WorldObj
 
    def jump
       if @num_standing_on_solid > 0 && (Time.now - @jump_time).to_f > 0.5
+         @animation_time = 0.0
          @body.push([0.0,JUMP_IMP])
          @jump_time = Time.now
       end
@@ -114,6 +108,25 @@ class Player < WorldObj
       vel = $one.body.vel
       vel.x *= 1.0 - 1.0 * time #* factor
       $one.body.vel = vel
+
+
+      delta = (Time.now - @animation_start).to_f
+      @animation_start = Time.now
+
+      if @num_standing_on_solid > 0
+         speed = (vel.x).abs
+         if speed > 2.5
+            @current_animation = "red-run"
+            delta *= speed / 8.0
+         else
+            @current_animation = "red-idle"
+         end
+         @animation_time += delta
+      else
+         @current_animation = "red-jump"
+         @animation_time += delta
+         @animation_time = [@animation_time, 0.99].min
+      end
    end
 
    def fire

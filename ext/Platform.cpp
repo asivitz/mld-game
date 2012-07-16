@@ -107,7 +107,7 @@ void Platform::draw()
    glBindFramebuffer(GL_FRAMEBUFFER,0);
 
 
-   bool draw_debug = true;
+   bool draw_debug = false;
    glViewport(0, 0, 600, 600);
    renderer->draw();
 
