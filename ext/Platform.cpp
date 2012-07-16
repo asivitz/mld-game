@@ -105,9 +105,6 @@ void Platform::draw()
    glViewport(0, 0, 600, 600);
    renderer->drawLights();
    glBindFramebuffer(GL_FRAMEBUFFER,0);
-   //lightMap->display();
-
-   //lightMap->getTexture().copyToImage().saveToFile("out.png");
 
 
    bool draw_debug = false;
@@ -119,7 +116,6 @@ void Platform::draw()
       0, -60, 0, 0, 
       0, 0, 1, 0,
       0, 0, 0, 1};
-   //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
    glBlendFunc(GL_DST_COLOR, GL_ZERO);
    
    {
@@ -127,8 +123,10 @@ void Platform::draw()
       glEnable(GL_BLEND);
       glBindTexture(GL_TEXTURE_2D, lightImage);
       glUniform1i(prog->locationOfTex(), 0);
-      //glUniform4f(prog->locationOfUniform("color"), 1.0, 1.0, 1.0, 1.0);
-      //glUniformMatrix4fv(prog->locationOfUniform("viewMat"), 1, GL_FALSE, renderer->viewMatrix);
+      glUniform2f(prog->locationOfUniform("loc"), 0.0, 0.0);
+      glUniform2f(prog->locationOfUniform("size"), 1.0, 1.0);
+      glUniform4f(prog->locationOfUniform("color"), 1.0, 1.0, 1.0, 1.0);
+      glUniformMatrix4fv(prog->locationOfUniform("viewMat"), 1, GL_FALSE, renderer->viewMatrix);
       glUniformMatrix4fv(prog->locationOfModelMat(), 1, GL_FALSE, lightModel);
       glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_SHORT, 0);
       glDisable(GL_BLEND);
@@ -195,17 +193,10 @@ void Platform::addSpriteDrawCommand(int texid, Array a, Array texTransform)
       if (texTransform.size() == 4)
       {
          VALUE * texVals = texTransform.to_c_array();
-         //cout << "s " << sizeof(command->texLoc[0]) << "and " << sizeof((float)NUM2DBL(texVals[0])) << endl;
          command->texLoc[0] = (float)NUM2DBL(texVals[0]);
          command->texLoc[1] = (float)NUM2DBL(texVals[1]);
          command->texSize[0] = (float)NUM2DBL(texVals[2]);
          command->texSize[1] = (float)NUM2DBL(texVals[3]);
-         cout << "s " << command->texLoc[0] << " and " << command->texSize[1] << endl;
-
-      //command->texLoc[0] = 0.0;
-      //command->texLoc[1] = 0.0;
-      //command->texSize[0] = 1.0;
-      //command->texSize[1] = 1.0;
       }
 
       renderer->addCommand(command);

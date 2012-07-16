@@ -44,19 +44,24 @@ class Player < WorldObj
       m = Matrix.identity(4)
       pos = @body.pos
       m = m.translate(pos[0],pos[1],0)
-      m = m.scale(-2 * @last_faced_direction,4,1)
+      m = m.scale(-1 * @last_faced_direction,1,1)
+      m = m.scale(50,50,1)
    end
 
    def draw
-      info = @sprite.info "red-throw0011"
-      if rand(6) > 4
-         $platform.addSpriteDrawCommand(@sprite.texid, self.mat.flatten, info)
-         #$platform.addSpriteDrawCommand(@sprite.texid, self.mat.flatten, [0.1, 0.0, 1.0, 1.0])
-      else
-         $platform.addDrawCommand(@sprite.texid, self.mat.flatten)
+      m = self.mat
+      frame = @sprite.frame "red-idle0003"
+      w = frame.w
+      h = frame.h
+      if frame.rotated
+         w = frame.h
+         h = frame.w
+         m = m.rotate(-Math::PI/2.0)
       end
-      #$platform.addSpriteDrawCommand(@sprite.texid, self.mat.flatten, info)
-      #$platform.addDrawCommand(@sprite.texid, self.mat.flatten)
+
+      m = m.scale(w/64.0, h/64.0, 1)
+      #$platform.addSpriteDrawCommand(@sprite.texid, self.mat.flatten, [0.0,0.0,0.1,0.1])
+      $platform.addSpriteDrawCommand(@sprite.texid, m.flatten, [frame.x/@sprite.size[0], frame.y/@sprite.size[1], w/@sprite.size[0], h/@sprite.size[1]])
    end
 
    def move_right

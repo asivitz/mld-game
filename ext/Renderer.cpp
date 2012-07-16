@@ -112,9 +112,6 @@ void Renderer::executeCommands(queue<DrawCommand *> * commands)
 
       glUniformMatrix4fv(program->locationOfModelMat(), 1, GL_FALSE, command->m);
 
-      cout << "loc loc:" << program->locationOfUniform("loc") << endl;
-      cout << "command:" << command << " loc x:" << command->texLoc[0] << " loc y:" << command->texLoc[1] << " w:" << command->texSize[0] << " h:" << command->texSize[1] << endl;
-      cout << "sizeof x:" << sizeof(command->texLoc[0]) << endl;
       glUniform2fv(program->locationOfUniform("loc"), 1, command->texLoc);
       glUniform2fv(program->locationOfUniform("size"), 1, command->texSize);
 
@@ -143,8 +140,6 @@ void Renderer::draw()
    glVertexAttribPointer(program->indexForAttribute("position"), 2, GL_FLOAT, 0, 0, 0);
    glEnableVertexAttribArray(program->indexForAttribute("position"));
    
-   cout << "Draw" << endl;
-
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
    glEnable(GL_BLEND);
    executeCommands(&drawCommands);
@@ -153,7 +148,7 @@ void Renderer::draw()
 
 void Renderer::drawLights()
 {
-   glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+   glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
    glClear( GL_COLOR_BUFFER_BIT );
 
    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -166,9 +161,6 @@ void Renderer::drawLights()
    glVertexAttribPointer(program->indexForAttribute("position"), 2, GL_FLOAT, 0, 0, 0);
    glEnableVertexAttribArray(program->indexForAttribute("position"));
    
-   cout << "Draw lights" << endl;
-
-   //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
    glBlendFunc(GL_ONE, GL_ONE);
    glEnable(GL_BLEND);
    executeCommands(&lightCommands);
